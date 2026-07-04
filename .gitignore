@@ -1,0 +1,17 @@
+# System / OS Files
+.DS_Store
+Thumbs.db
+
+# Vercel deployment metadata
+.vercel/
+
+# Local backup or temporary configuration data
+.env
+.env.local
+.env.*.local
+
+# Local text files or copies of the student roster 
+# (Keeps your raw student data out of the public repo)
+students_serial_wise.csv
+* - Copy.html
+*.log
