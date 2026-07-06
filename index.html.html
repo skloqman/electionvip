@@ -111,25 +111,24 @@
 </div>
 
 <script>
-// ENVIRONMENTAL BOOT ENGINE: Mount storage patch before anything else executes to avoid loading locks
-window.storage = window.storage || {
-  get: async function(key) { return { value: localStorage.getItem(key) }; },
-  set: async function(key, val) { localStorage.setItem(key, val); return true; }
-};
-
-// FORCE-PURGE PREVIOUS BROKEN OBJECTS FROM PHONES AND LAPTOPS INSTANTLY
-(function forceSyncFlush() {
+// FORCE-PURGE HARD RESET TRACKER ON LOAD
+(function forceResetPipeline() {
   try {
     const versionKey = "election-app-version";
-    const currentSignature = "v7.0_flush_final";
+    const currentSignature = "v8.0_json_final";
     if (localStorage.getItem(versionKey) !== currentSignature) {
       localStorage.clear(); 
       localStorage.setItem(versionKey, currentSignature);
     }
   } catch (e) {
-    console.error("Purge aborted:", e);
+    console.error("Purge loop blocked:", e);
   }
 })();
+
+window.storage = {
+  get: async function(key) { return { value: localStorage.getItem(key) }; },
+  set: async function(key, val) { localStorage.setItem(key, val); return true; }
+};
 
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
@@ -216,191 +215,16 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// STRIPPED LINE GAPS: Defines values strictly flush left to guarantee error-free array generation loops
-const STAFF_RAW_DATA = 
-"FAC1,Mr. Mujtaba Khan,Faculty & Staff,Managing Director\n" +
-"FAC2,Ms. Veena,Faculty & Staff,Academic Director\n" +
-"FAC3,Ms. Syeda Mahjabeen,Faculty & Staff,Academic In charge\n" +
-"FAC4,Ma. Asma Najeeb,Faculty & Staff,Academic Incharge(FLK)\n" +
-"FAC5,Mr. Wahed,Faculty & Staff,Deeniyath HOD\n" +
-"FAC6,Ms. Doris Shaik,Faculty & Staff,Admin Incharge\n" +
-"FAC7,Ms. Mahjabeen,Faculty & Staff,In Charge\n" +
-"FAC8,Ms. Seema Jabbar,Faculty & Staff,In Charge\n" +
-"FAC26,Mr. Salman,Faculty & Staff,Admin\n" +
-"FAC9,Ms. Shazia,Faculty & Staff,Teacher\n" +
-"FAC10,Ms. Parveen,Faculty & Staff,Teacher\n" +
-"FAC11,Ms. Rubeena,Faculty & Staff,Teacher\n" +
-"FAC12,Ms. Yasmeen,Faculty & Staff,Teacher\n" +
-"FAC13,Ms. Heena,Faculty & Staff,Teacher\n" +
-"FAC14,Ms. Mariyam,Faculty & Staff,Teacher\n" +
-"FAC15,Ms. Asfiya,Faculty & Staff,Teacher\n" +
-"FAC16,Ms. Kahera,Faculty & Staff,Teacher\n" +
-"FAC17,Ms. Zoya,Faculty & Staff,Teacher\n" +
-"FAC18,Ms. Reshma,Faculty & Staff,Teacher\n" +
-"FAC19,Ms. Masarath,Faculty & Staff,Teacher\n" +
-"FAC20,Ms. Amena,Faculty & Staff,Teacher\n" +
-"FAC21,Ms. Maheen,Faculty & Staff,Teacher\n" +
-"FAC22,Mr. Jaleel,Faculty & Staff,Teacher\n" +
-"FAC23,Mr. Fuzail,Faculty & Staff,Teacher\n" +
-"FAC24,Mr. Loqman,Faculty & Staff,Teacher\n" +
-"FAC25,Mr. Mohiuddin,Faculty & Staff,Teacher\n" +
-"FAC32,Imran,Faculty & Staff,Driver\n" +
-"FAC33,Hameed,Faculty & Staff,Driver\n" +
-"FAC27,Khaled,Faculty & Staff,Watch man\n" +
-"FAC28,M. Jyoti,Faculty & Staff,Supporting Staff\n" +
-"FAC29,Savitri,Faculty & Staff,Supporting Staff\n" +
-"FAC30,Noor,Faculty & Staff,Supporting Staff\n" +
-"FAC31,Baleshwari,Faculty & Staff,Supporting Staff";
+// JSON SYSTEM LAYOUT: Encoded directly into standard array variables to secure string operations completely
+const DEFAULT_ROSTER = [{"id":"FAC1","name":"Mr. Mujtaba Khan","grade":"Faculty & Staff","section":"Managing Director"},{"id":"FAC2","name":"Ms. Veena","grade":"Faculty & Staff","section":"Academic Director"},{"id":"FAC3","name":"Ms. Syeda Mahjabeen","grade":"Faculty & Staff","section":"Academic In charge"},{"id":"FAC4","name":"Ma. Asma Najeeb","grade":"Faculty & Staff","section":"Academic Incharge(FLK)"},{"id":"FAC5","name":"Mr. Wahed","grade":"Faculty & Staff","section":"Deeniyath HOD"},{"id":"FAC6","name":"Ms. Doris Shaik","grade":"Faculty & Staff","section":"Admin Incharge"},{"id":"FAC7","name":"Ms. Mahjabeen","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC8","name":"Ms. Seema Jabbar","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC26","name":"Mr. Salman","grade":"Faculty & Staff","section":"Admin"},{"id":"FAC9","name":"Ms. Shazia","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC10","name":"Ms. Parveen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC11","name":"Ms. Rubeena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC12","name":"Ms. Yasmeen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC13","name":"Ms. Heena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC14","name":"Ms. Mariyam","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC15","name":"Ms. Asfiya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC16","name":"Ms. Kahera","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC17","name":"Ms. Zoya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC18","name":"Ms. Reshma","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC19","name":"Ms. Masarath","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC20","name":"Ms. Amena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC21","name":"Ms. Maheen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC22","name":"Mr. Jaleel","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC23","name":"Mr. Fuzail","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC24","name":"Mr. Loqman","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC25","name":"Mr. Mohiuddin","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC32","name":"Imran","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC33","name":"Hameed","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC27","name":"Khaled","grade":"Faculty & Staff","section":"Watch man"},{"id":"FAC28","name":"M. Jyoti","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC29","name":"Savitri","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC30","name":"Noor","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC31","name":"Baleshwari","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"1","name":"Abdul Kabir","grade":"4","section":""},{"id":"2","name":"Ali Bin Sawood Bakoban","grade":"4","section":""},{"id":"3","name":"Ayesha Syed Hasan","grade":"4","section":""},{"id":"4","name":"Ayra Afsheen","grade":"4","section":""},{"id":"5","name":"BIBI AYESHA SIDDIQUA","grade":"4","section":""},{"id":"6","name":"Habeeb Khan","grade":"4","section":""},{"id":"7","name":"MAHER UNNISA","grade":"4","section":""},{"id":"8","name":"Maira Mujeeb Khan","grade":"4","section":""},{"id":"9","name":"Maryam Ismail Shareef","grade":"4","section":""},{"id":"10","name":"Mir Anas Ali","grade":"4","section":""},{"id":"11","name":"Mohammed Ibrahim","grade":"4","section":""},{"id":"12","name":"MOHAMMED MALIK KHAN","grade":"4","section":""},{"id":"13","name":"Mohammed MizbaUddin","grade":"4","section":""},{"id":"14","name":"Mohammed Sohaan","grade":"4","section":""},{"id":"15","name":"Muhammad Ibrahim","grade":"4","section":""},{"id":"16","name":"Nida Fatima","grade":"4","section":""},{"id":"17","name":"Shaik Azaan","grade":"4","section":""},{"id":"18","name":"Syed Azaan Uddin","grade":"4","section":""},{"id":"19","name":"SYED FARHAN","grade":"4","section":""},{"id":"20","name":"Syed Mohammed Hussain","grade":"4","section":""},{"id":"21","name":"Syed Murtaza","grade":"4","section":""},{"id":"22","name":"Syed Mustafa","grade":"4","section":""},{"id":"23","name":"Syeda Hoorain","grade":"4","section":""},{"id":"24","name":"Syeda Zainab Afsheen","grade":"4","section":""},{"id":"25","name":"Tazkiya Tahreem","grade":"4","section":""},{"id":"26","name":"Zahra Fatima","grade":"4","section":""},{"id":"27","name":"ARHUM KHAN","grade":"5","section":""},{"id":"28","name":"BATUL FATIMA","grade":"5","section":""},{"id":"29","name":"DURAR HADI","grade":"5","section":""},{"id":"30","name":"KHADIJA FATIMA","grade":"5","section":""},{"id":"31","name":"MARIYAM FATIMA","grade":"5","section":""},{"id":"32","name":"MOHD AMMAR","grade":"5","section":""},{"id":"33","name":"ARZAN","grade":"5","section":""},{"id":"34","name":"MOHD FAIZ","grade":"5","section":""},{"id":"35","name":"MOHD MUHAMMED","grade":"5","section":""},{"id":"36","name":"ZAIN MAHMOOD","grade":"5","section":""},{"id":"37","name":"SYED AFFAN MEER","grade":"5","section":""},{"id":"38","name":"SYED AYAN AHMED","grade":"5","section":""},{"id":"39","name":"SYED MUHAMMMED","grade":"5","section":""},{"id":"40","name":"S. SAMAIRA NOOR","grade":"5","section":""},{"id":"41","name":"UMAIMA SHAIK","grade":"5","section":""},{"id":"42","name":"ZUNAIRA HYDER","grade":"5","section":""},{"id":"43","name":"ABDUL KABEER","grade":"6","section":""},{"id":"44","name":"ABDUL RAHMAN","grade":"6","section":""},{"id":"45","name":"AFEEFA FATIMA","grade":"6","section":""},{"id":"46","name":"AIZA SADIQ","grade":"6","section":""},{"id":"47","name":"ALEENA AZIN","grade":"6","section":""},{"id":"48","name":"ALIZA FATIMA","grade":"6","section":""},{"id":"49","name":"DANIYA LARAIB","grade":"6","section":""},{"id":"50","name":"JUVERIYA KAMAL","grade":"6","section":""},{"id":"51","name":"MADIHA BAKOOBAN","grade":"6","section":""},{"id":"52","name":"MOHD ABDUL RAYYAN","grade":"6","section":""},{"id":"53","name":"MOHAMMED SHUJA","grade":"6","section":""},{"id":"54","name":"SHAIK IBRAHIM","grade":"6","section":""},{"id":"55","name":"SYED AHMED ALI","grade":"6","section":""},{"id":"56","name":"SYED UZAIR","grade":"6","section":""},{"id":"57","name":"SYED ZUHAIR","grade":"6","section":""},{"id":"58","name":"TAMEEM RAHEEL BHAT","grade":"6","section":""},{"id":"59","name":"UMRA FATIMA","grade":"6","section":""},{"id":"60","name":"UZAIR KHAN","grade":"6","section":""},{"id":"61","name":"ZARA SALEEM","grade":"6","section":""},{"id":"62","name":"Abdullah Syed Hasan","grade":"7","section":""},{"id": "63", "name": "Ahmed Bin Sawood Bakooban", "grade": "7", "section": ""}, {"id": "64", "name": "Amatul Hameed Rumaisa", "grade": "7", "section": ""}, {"id": "65", "name": "Ammara Faiz", "grade": "7", "section": ""}, {"id": "66", "name": "Md Abdul Bari", "grade": "7", "section": ""}, {"id": "67", "name": "Mohammed Abdul Salah", "grade": "7", "section": ""}, {"id": "68", "name": "Mohammed Arhaan Uddin", "grade": "7", "section": ""}, {"id": "69", "name": "Mohammed Rehan", "grade": "7", "section": ""}, {"id": "70", "name": "Mohammed Shahriyar Khan", "grade": "7", "section": ""}, {"id": "71", "name": "Mohd Arham Uddin", "grade": "7", "section": ""}, {"id": "72", "name": "Shaik Abdul Fazl ur Rahman Quadri", "grade": "7", "section": ""}, {"id": "73", "name": "Syed Khaja Ahsanuddin", "grade": "7", "section": ""}, {"id": "74", "name": "Syed Rehan", "grade": "7", "section": ""}, {"id": "75", "name": "Syed Yaheya Zain", "grade": "7", "section": ""}, {"id": "76", "name": "Syeda Mahveen Fatima", "grade": "7", "section": ""}, {"id": "77", "name": "Syeda Zunairah Begum", "grade": "7", "section": ""}, {"id": "78", "name": "Uzair Imtiaz", "grade": "7", "section": ""}, {"id": "79", "name": "Zunairah Amtul Aleem", "grade": "7", "section": ""}, {"id": "80", "name": "Abdullah Syed Hasan", "grade": "8", "section": ""}, {"id": "81", "name": "Ahmed Bin Sawood Bakooban", "grade": "8", "section": ""}, {"id": "82", "name": "Amatul Hameed Rumaisa", "grade": "8", "section": ""}, {"id": "83", "name": "Ammara Faiz", "grade": "8", "section": ""}, {"id": "84", "name": "Md Abdul Bari", "grade": "8", "section": ""}, {"id": "85", "name": "Mohammed Abdul Salah", "grade": "8", "section": ""}, {"id": "86", "name": "Mohammed Arhaan Uddin", "grade": "8", "section": ""}, {"id": "87", "name": "Mohammed Rehan", "grade": "8", "section": ""}, {"id": "88", "name": "Mohammed Shahriyar Khan", "grade": "8", "section": ""}, {"id": "89", "name": "Mohd Arham Uddin", "grade": "8", "section": ""}, {"id": "90", "name": "Shaik Abdul Fazl ur Rahman Quadri", "grade": "8", "section": ""}, {"id": "91", "name": "Syed Khaja Ahsanuddin", "grade": "8", "section": ""}, {"id": "92", "name": "Syed Rehan", "grade": "8", "section": ""}, {"id": "93", "name": "Syed Yaheya Zain", "grade": "8", "section": ""}, {"id": "94", "name": "Syeda Mahveen Fatima", "grade": "8", "section": ""}, {"id": "95", "name": "Syeda Zunairah Begum", "grade": "8", "section": ""}, {"id": "96", "name": "Uzair Imtiaz", "grade": "8", "section": ""}, {"id": "97", "name": "Zunairah Amtul Aleem", "grade": "8", "section": ""}];
 
-const STUDENT_RAW_DATA = 
-"1,Abdul Kabir,4\n" +
-"2,Ali Bin Sawood Bakoban,4\n" +
-"3,Ayesha Syed Hasan,4\n" +
-"4,Ayra Afsheen,4\n" +
-"5,BIBI AYESHA SIDDIQUA,4\n" +
-"6,Habeeb Khan,4\n" +
-"7,MAHER UNNISA,4\n" +
-"8,Maira Mujeeb Khan,4\n" +
-"9,Maryam Ismail Shareef,4\n" +
-"10,Mir Anas Ali,4\n" +
-"11,Mohammed Ibrahim,4\n" +
-"12,MOHAMMED MALIK KHAN,4\n" +
-"13,Mohammed MizbaUddin,4\n" +
-"14,Mohammed Sohaan,4\n" +
-"15,Muhammad Ibrahim,4\n" +
-"16,Nida Fatima,4\n" +
-"17,Shaik Azaan,4\n" +
-"18,Syed Azaan Uddin,4\n" +
-"19,SYED FARHAN,4\n" +
-"20,Syed Mohammed Hussain,4\n" +
-"21,Syed Murtaza,4\n" +
-"22,Syed Mustafa,4\n" +
-"23,Syeda Hoorain,4\n" +
-"24,Syeda Zainab Afsheen,4\n" +
-"25,Tazkiya Tahreem,4\n" +
-"26,Zahra Fatima,4\n" +
-"27,ARHUM KHAN,5\n" +
-"28,BATUL FATIMA,5\n" +
-"29,DURAR HADI,5\n" +
-"30,KHADIJA FATIMA,5\n" +
-"31,MARIYAM FATIMA,5\n" +
-"32,MOHD AMMAR,5\n" +
-"33,ARZAN,5\n" +
-"34,MOHD FAIZ,5\n" +
-"35,MOHD MUHAMMED,5\n" +
-"36,ZAIN MAHMOOD,5\n" +
-"37,SYED AFFAN MEER,5\n" +
-"38,SYED AYAN AHMED,5\n" +
-"39,SYED MUHAMMMED,5\n" +
-"40,S. SAMAIRA NOOR,5\n" +
-"41,UMAIMA SHAIK,5\n" +
-"42,ZUNAIRA HYDER,5\n" +
-"43,ABDUL KABEER,6\n" +
-"44,ABDUL RAHMAN,6\n" +
-"45,AFEEFA FATIMA,6\n" +
-"46,AIZA SADIQ,6\n" +
-"47,ALEENA AZIN,6\n" +
-"48,ALIZA FATIMA,6\n" +
-"49,DANIYA LARAIB,6\n" +
-"50,JUVERIYA KAMAL,6\n" +
-"51,MADIHA BAKOOBAN,6\n" +
-"52,MOHD ABDUL RAYYAN,6\n" +
-"53,MOHAMMED SHUJA,6\n" +
-"54,SHAIK IBRAHIM,6\n" +
-"55,SYED AHMED ALI,6\n" +
-"56,SYED UZAIR,6\n" +
-"57,SYED ZUHAIR,6\n" +
-"58,TAMEEM RAHEEL BHAT,6\n" +
-"59,UMRA FATIMA,6\n" +
-"60,UZAIR KHAN,6\n" +
-"61,ZARA SALEEM,6\n" +
-"62,Abdullah Syed Hasan,7\n" +
-"63,Ahmed Bin Sawood Bakooban,7\n" +
-"64,Amatul Hameed Rumaisa,7\n" +
-"65,Ammara Faiz,7\n" +
-"66,Md Abdul Bari,7\n" +
-"67,Mohammed Abdul Salah,7\n" +
-"68,Mohammed Arhaan Uddin,7\n" +
-"69,Mohammed Rehan,7\n" +
-"70,Mohammed Shahriyar Khan,7\n" +
-"71,Mohd Arham Uddin,7\n" +
-"72,Shaik Abdul Fazl ur Rahman Quadri,7\n" +
-"73,Syed Khaja Ahsanuddin,7\n" +
-"74,Syed Rehan,7\n" +
-"75,Syed Yaheya Zain,7\n" +
-"76,Syeda Mahveen Fatima,7\n" +
-"77,Syeda Zunairah Begum,7\n" +
-"78,Uzair Imtiaz,7\n" +
-"79,Zunairah Amtul Aleem,7\n" +
-"80,Abdullah Syed Hasan,8\n" +
-"81,Ahmed Bin Sawood Bakooban,8\n" +
-"82,Amatul Hameed Rumaisa,8\n" +
-"83,Ammara Faiz,8\n" +
-"84,Md Abdul Bari,8\n" +
-"85,Mohammed Abdul Salah,8\n" +
-"86,Mohammed Arhaan Uddin,8\n" +
-"87,Mohammed Rehan,8\n" +
-"88,Mohammed Shahriyar Khan,8\n" +
-"89,Mohd Arham Uddin,8\n" +
-"90,Shaik Abdul Fazl ur Rahman Quadri,8\n" +
-"91,Syed Khaja Ahsanuddin,8\n" +
-"92,Syed Rehan,8\n" +
-"93,Syed Yaheya Zain,8\n" +
-"94,Syeda Mahveen Fatima,8\n" +
-"95,Syeda Zunairah Begum,8\n" +
-"96,Uzair Imtiaz,8\n" +
-"97,Zunairah Amtul Aleem,8";
-
-function parseDirectory(text) {
-  const output = [];
-  if(!text) return output;
-  text.split("\n").forEach(line => {
-    const parts = line.split(",");
-    if (parts.length >= 3) {
-      output.push({
-        id: parts[0].trim(),
-        name: parts[1].trim(),
-        grade: parts[2].trim(),
-        section: parts[3] ? parts[3].trim() : ""
-      });
-    }
-  });
-  return output;
+async function safeGet(key){
+  try{ const r = await window.storage.get(key, SHARED); return r ? r.value : null; }
+  catch(e){ return null; }
 }
-
-const DEFAULT_ROSTER = parseDirectory(STAFF_RAW_DATA).concat(parseDirectory(STUDENT_RAW_DATA));
-
-let state = {
-  view: "vote",
-  config: null,
-  votes: {},
-  voters: {}, 
-  roster: [],
-  houseRoster: [], 
-  houseVoters: {}, 
-  selectedGrade: "",
-  selectedStudentId: "",
-  selectedHouseGrade: "",
-  selectedHouseStudentId: "",
-  selections: {},
-  houseSelections: {},
-  error: "",
-  adminError: "",
-  isAdmin: false,
-  lastReceipt: null,
-  pendingImages: {}
-};
-
-function getStaffOrderScore(section) {
-  const s = (section || "").toLowerCase();
-  if (s.includes("managing director")) return 1;
-  if (s.includes("academic director")) return 2;
-  if (s.includes("academic in charge") || s.includes("academic incharge")) return 3;
-  if (s.includes("hod")) return 4;
-  if (s.includes("admin")) return 5;
-  if (s.includes("teacher")) return 6;
-  if (s.includes("driver")) return 7;
-  return 8; 
+async function safeSet(key, value){
+  try{ await window.storage.set(key, value, SHARED); return true; }
+  catch(e){ console.error("storage set failed", e); return false; }
 }
 
 async function loadAll(){
