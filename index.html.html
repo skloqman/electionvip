@@ -111,7 +111,7 @@
 </div>
 
 <script>
-// CRITICAL: Ensure environmental storage modules bind completely before running downstream functions
+// ENVIRONMENTAL BOOT ENGINE: Mount storage patch before anything else executes to avoid loading locks
 window.storage = window.storage || {
   get: async function(key) { return { value: localStorage.getItem(key) }; },
   set: async function(key, val) { localStorage.setItem(key, val); return true; }
@@ -119,7 +119,7 @@ window.storage = window.storage || {
 
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
-const ELECTION_VERSION = "v2.0_final"; // Incrementing this version string force-flushes the device cache instantly
+const ELECTION_VERSION = "v3.0_reset"; // Overwrites old browser data artifacts instantly
 
 const DEFAULT_CONFIG = {
   schoolName: "VIP's INTERNATIONAL SCHOOL",
@@ -203,7 +203,6 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// Fixed-sequence verified master roster layout
 const DEFAULT_ROSTER = [
   {"id": "FAC1", "name": "Mr. Mujtaba Khan", "grade": "Faculty & Staff", "section": "Managing Director"},
   {"id": "FAC2", "name": "Ms. Veena", "grade": "Faculty & Staff", "section": "Academic Director"},
@@ -275,7 +274,7 @@ function getStaffOrderScore(section) {
 }
 
 async function loadAll(){
-  // HARD FORCE-RESET TO EVADE OLD CACHE PARSING PROBLEMS
+  // HARD RE-SYNC ROUTINE: Triggers if version string mismatches
   const cachedVersion = await safeGet("election-app-version");
   if (cachedVersion !== ELECTION_VERSION) {
     await safeSet("election-config", JSON.stringify(DEFAULT_CONFIG));
@@ -373,6 +372,7 @@ function tabBtn(view, label){
   return '<button class="tab ' + (active ? "active":"") + '" data-tab="' + view + '">' + label + '</button>';
 }
 
+// Persist uploaded dynamic changes safely
 function renderHeader(cfg){
   const logo = cfg.schoolLogo ? '<img class="school-logo-img" src="' + cfg.schoolLogo + '" alt="School logo">' : '';
   return '<header class="masthead">' + logo + '<div class="eyebrow">Official Ballot &middot; ' + esc(cfg.year) + '</div>' +
@@ -770,7 +770,7 @@ function attachHandlers(){
     resetVotesBtn.addEventListener('click', async () => {
       if (!confirm('Reset entire vote counting metrics?')) return;
       state.votes = {}; state.voters = {}; state.houseVoters = {};
-      await saveVotes(); await saveVoters(); await saveHouseVoters();
+      await saveVotes(); await saveVoters(); await safeSet("election-house-voters", "{}");
       render();
     });
   }
