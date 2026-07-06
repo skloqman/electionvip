@@ -111,26 +111,17 @@
 </div>
 
 <script>
-// FORCE-PURGE HARD RESET TRACKER ON LOAD
-(function forceResetPipeline() {
+// ENVIRONMENTAL SYNC CLEANER: Always clear past system locks instantly on run
+(function clearOldLocks() {
   try {
-    const versionKey = "election-app-version";
-    const currentSignature = "v8.0_json_final";
-    if (localStorage.getItem(versionKey) !== currentSignature) {
-      localStorage.clear(); 
-      localStorage.setItem(versionKey, currentSignature);
+    const freshVersion = "v9.0_sync_rebuild";
+    if (localStorage.getItem("app_layout_version") !== freshVersion) {
+      localStorage.clear();
+      localStorage.setItem("app_layout_version", freshVersion);
     }
-  } catch (e) {
-    console.error("Purge loop blocked:", e);
-  }
+  } catch(e) {}
 })();
 
-window.storage = {
-  get: async function(key) { return { value: localStorage.getItem(key) }; },
-  set: async function(key, val) { localStorage.setItem(key, val); return true; }
-};
-
-const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
 
 const DEFAULT_CONFIG = {
@@ -215,49 +206,66 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// JSON SYSTEM LAYOUT: Encoded directly into standard array variables to secure string operations completely
-const DEFAULT_ROSTER = [{"id":"FAC1","name":"Mr. Mujtaba Khan","grade":"Faculty & Staff","section":"Managing Director"},{"id":"FAC2","name":"Ms. Veena","grade":"Faculty & Staff","section":"Academic Director"},{"id":"FAC3","name":"Ms. Syeda Mahjabeen","grade":"Faculty & Staff","section":"Academic In charge"},{"id":"FAC4","name":"Ma. Asma Najeeb","grade":"Faculty & Staff","section":"Academic Incharge(FLK)"},{"id":"FAC5","name":"Mr. Wahed","grade":"Faculty & Staff","section":"Deeniyath HOD"},{"id":"FAC6","name":"Ms. Doris Shaik","grade":"Faculty & Staff","section":"Admin Incharge"},{"id":"FAC7","name":"Ms. Mahjabeen","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC8","name":"Ms. Seema Jabbar","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC26","name":"Mr. Salman","grade":"Faculty & Staff","section":"Admin"},{"id":"FAC9","name":"Ms. Shazia","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC10","name":"Ms. Parveen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC11","name":"Ms. Rubeena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC12","name":"Ms. Yasmeen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC13","name":"Ms. Heena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC14","name":"Ms. Mariyam","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC15","name":"Ms. Asfiya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC16","name":"Ms. Kahera","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC17","name":"Ms. Zoya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC18","name":"Ms. Reshma","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC19","name":"Ms. Masarath","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC20","name":"Ms. Amena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC21","name":"Ms. Maheen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC22","name":"Mr. Jaleel","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC23","name":"Mr. Fuzail","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC24","name":"Mr. Loqman","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC25","name":"Mr. Mohiuddin","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC32","name":"Imran","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC33","name":"Hameed","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC27","name":"Khaled","grade":"Faculty & Staff","section":"Watch man"},{"id":"FAC28","name":"M. Jyoti","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC29","name":"Savitri","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC30","name":"Noor","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC31","name":"Baleshwari","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"1","name":"Abdul Kabir","grade":"4","section":""},{"id":"2","name":"Ali Bin Sawood Bakoban","grade":"4","section":""},{"id":"3","name":"Ayesha Syed Hasan","grade":"4","section":""},{"id":"4","name":"Ayra Afsheen","grade":"4","section":""},{"id":"5","name":"BIBI AYESHA SIDDIQUA","grade":"4","section":""},{"id":"6","name":"Habeeb Khan","grade":"4","section":""},{"id":"7","name":"MAHER UNNISA","grade":"4","section":""},{"id":"8","name":"Maira Mujeeb Khan","grade":"4","section":""},{"id":"9","name":"Maryam Ismail Shareef","grade":"4","section":""},{"id":"10","name":"Mir Anas Ali","grade":"4","section":""},{"id":"11","name":"Mohammed Ibrahim","grade":"4","section":""},{"id":"12","name":"MOHAMMED MALIK KHAN","grade":"4","section":""},{"id":"13","name":"Mohammed MizbaUddin","grade":"4","section":""},{"id":"14","name":"Mohammed Sohaan","grade":"4","section":""},{"id":"15","name":"Muhammad Ibrahim","grade":"4","section":""},{"id":"16","name":"Nida Fatima","grade":"4","section":""},{"id":"17","name":"Shaik Azaan","grade":"4","section":""},{"id":"18","name":"Syed Azaan Uddin","grade":"4","section":""},{"id":"19","name":"SYED FARHAN","grade":"4","section":""},{"id":"20","name":"Syed Mohammed Hussain","grade":"4","section":""},{"id":"21","name":"Syed Murtaza","grade":"4","section":""},{"id":"22","name":"Syed Mustafa","grade":"4","section":""},{"id":"23","name":"Syeda Hoorain","grade":"4","section":""},{"id":"24","name":"Syeda Zainab Afsheen","grade":"4","section":""},{"id":"25","name":"Tazkiya Tahreem","grade":"4","section":""},{"id":"26","name":"Zahra Fatima","grade":"4","section":""},{"id":"27","name":"ARHUM KHAN","grade":"5","section":""},{"id":"28","name":"BATUL FATIMA","grade":"5","section":""},{"id":"29","name":"DURAR HADI","grade":"5","section":""},{"id":"30","name":"KHADIJA FATIMA","grade":"5","section":""},{"id":"31","name":"MARIYAM FATIMA","grade":"5","section":""},{"id":"32","name":"MOHD AMMAR","grade":"5","section":""},{"id":"33","name":"ARZAN","grade":"5","section":""},{"id":"34","name":"MOHD FAIZ","grade":"5","section":""},{"id":"35","name":"MOHD MUHAMMED","grade":"5","section":""},{"id":"36","name":"ZAIN MAHMOOD","grade":"5","section":""},{"id":"37","name":"SYED AFFAN MEER","grade":"5","section":""},{"id":"38","name":"SYED AYAN AHMED","grade":"5","section":""},{"id":"39","name":"SYED MUHAMMMED","grade":"5","section":""},{"id":"40","name":"S. SAMAIRA NOOR","grade":"5","section":""},{"id":"41","name":"UMAIMA SHAIK","grade":"5","section":""},{"id":"42","name":"ZUNAIRA HYDER","grade":"5","section":""},{"id":"43","name":"ABDUL KABEER","grade":"6","section":""},{"id":"44","name":"ABDUL RAHMAN","grade":"6","section":""},{"id":"45","name":"AFEEFA FATIMA","grade":"6","section":""},{"id":"46","name":"AIZA SADIQ","grade":"6","section":""},{"id":"47","name":"ALEENA AZIN","grade":"6","section":""},{"id":"48","name":"ALIZA FATIMA","grade":"6","section":""},{"id":"49","name":"DANIYA LARAIB","grade":"6","section":""},{"id":"50","name":"JUVERIYA KAMAL","grade":"6","section":""},{"id":"51","name":"MADIHA BAKOOBAN","grade":"6","section":""},{"id":"52","name":"MOHD ABDUL RAYYAN","grade":"6","section":""},{"id":"53","name":"MOHAMMED SHUJA","grade":"6","section":""},{"id":"54","name":"SHAIK IBRAHIM","grade":"6","section":""},{"id":"55","name":"SYED AHMED ALI","grade":"6","section":""},{"id":"56","name":"SYED UZAIR","grade":"6","section":""},{"id":"57","name":"SYED ZUHAIR","grade":"6","section":""},{"id":"58","name":"TAMEEM RAHEEL BHAT","grade":"6","section":""},{"id":"59","name":"UMRA FATIMA","grade":"6","section":""},{"id":"60","name":"UZAIR KHAN","grade":"6","section":""},{"id":"61","name":"ZARA SALEEM","grade":"6","section":""},{"id":"62","name":"Abdullah Syed Hasan","grade":"7","section":""},{"id": "63", "name": "Ahmed Bin Sawood Bakooban", "grade": "7", "section": ""}, {"id": "64", "name": "Amatul Hameed Rumaisa", "grade": "7", "section": ""}, {"id": "65", "name": "Ammara Faiz", "grade": "7", "section": ""}, {"id": "66", "name": "Md Abdul Bari", "grade": "7", "section": ""}, {"id": "67", "name": "Mohammed Abdul Salah", "grade": "7", "section": ""}, {"id": "68", "name": "Mohammed Arhaan Uddin", "grade": "7", "section": ""}, {"id": "69", "name": "Mohammed Rehan", "grade": "7", "section": ""}, {"id": "70", "name": "Mohammed Shahriyar Khan", "grade": "7", "section": ""}, {"id": "71", "name": "Mohd Arham Uddin", "grade": "7", "section": ""}, {"id": "72", "name": "Shaik Abdul Fazl ur Rahman Quadri", "grade": "7", "section": ""}, {"id": "73", "name": "Syed Khaja Ahsanuddin", "grade": "7", "section": ""}, {"id": "74", "name": "Syed Rehan", "grade": "7", "section": ""}, {"id": "75", "name": "Syed Yaheya Zain", "grade": "7", "section": ""}, {"id": "76", "name": "Syeda Mahveen Fatima", "grade": "7", "section": ""}, {"id": "77", "name": "Syeda Zunairah Begum", "grade": "7", "section": ""}, {"id": "78", "name": "Uzair Imtiaz", "grade": "7", "section": ""}, {"id": "79", "name": "Zunairah Amtul Aleem", "grade": "7", "section": ""}, {"id": "80", "name": "Abdullah Syed Hasan", "grade": "8", "section": ""}, {"id": "81", "name": "Ahmed Bin Sawood Bakooban", "grade": "8", "section": ""}, {"id": "82", "name": "Amatul Hameed Rumaisa", "grade": "8", "section": ""}, {"id": "83", "name": "Ammara Faiz", "grade": "8", "section": ""}, {"id": "84", "name": "Md Abdul Bari", "grade": "8", "section": ""}, {"id": "85", "name": "Mohammed Abdul Salah", "grade": "8", "section": ""}, {"id": "86", "name": "Mohammed Arhaan Uddin", "grade": "8", "section": ""}, {"id": "87", "name": "Mohammed Rehan", "grade": "8", "section": ""}, {"id": "88", "name": "Mohammed Shahriyar Khan", "grade": "8", "section": ""}, {"id": "89", "name": "Mohd Arham Uddin", "grade": "8", "section": ""}, {"id": "90", "name": "Shaik Abdul Fazl ur Rahman Quadri", "grade": "8", "section": ""}, {"id": "91", "name": "Syed Khaja Ahsanuddin", "grade": "8", "section": ""}, {"id": "92", "name": "Syed Rehan", "grade": "8", "section": ""}, {"id": "93", "name": "Syed Yaheya Zain", "grade": "8", "section": ""}, {"id": "94", "name": "Syeda Mahveen Fatima", "grade": "8", "section": ""}, {"id": "95", "name": "Syeda Zunairah Begum", "grade": "8", "section": ""}, {"id": "96", "name": "Uzair Imtiaz", "grade": "8", "section": ""}, {"id": "97", "name": "Zunairah Amtul Aleem", "grade": "8", "section": ""}];
+// SYNCHRONOUS INITIALIZATION DATA MATRICES: Prevents browser string token parsing errors entirely[cite: 1]
+const DEFAULT_ROSTER = [{"id":"FAC1","name":"Mr. Mujtaba Khan","grade":"Faculty & Staff","section":"Managing Director"},{"id":"FAC2","name":"Ms. Veena","grade":"Faculty & Staff","section":"Academic Director"},{"id":"FAC3","name":"Ms. Syeda Mahjabeen","grade":"Faculty & Staff","section":"Academic In charge"},{"id":"FAC4","name":"Ma. Asma Najeeb","grade":"Faculty & Staff","section":"Academic Incharge(FLK)"},{"id":"FAC5","name":"Mr. Wahed","grade":"Faculty & Staff","section":"Deeniyath HOD"},{"id":"FAC6","name":"Ms. Doris Shaik","grade":"Faculty & Staff","section":"Admin Incharge"},{"id":"FAC7","name":"Ms. Mahjabeen","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC8","name":"Ms. Seema Jabbar","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC26","name":"Mr. Salman","grade":"Faculty & Staff","section":"Admin"},{"id":"FAC9","name":"Ms. Shazia","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC10","name":"Ms. Parveen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC11","name":"Ms. Rubeena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC12","name":"Ms. Yasmeen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC13","name":"Ms. Heena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC14","name":"Ms. Mariyam","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC15","name":"Ms. Asfiya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC16","name":"Ms. Kahera","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC17","name":"Ms. Zoya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC18","name":"Ms. Reshma","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC19","name":"Ms. Masarath","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC20","name":"Ms. Amena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC21","name":"Ms. Maheen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC22","name":"Mr. Jaleel","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC23","name":"Mr. Fuzail","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC24","name":"Mr. Loqman","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC25","name":"Mr. Mohiuddin","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC32","name":"Imran","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC33","name":"Hameed","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC27","name":"Khaled","grade":"Faculty & Staff","section":"Watch man"},{"id":"FAC28","name":"M. Jyoti","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC29","name":"Savitri","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC30","name":"Noor","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC31","name":"Baleshwari","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"1","name":"Abdul Kabir","grade":"4","section":""},{"id":"2","name":"Ali Bin Sawood Bakoban","grade":"4","section":""},{"id":"3","name":"Ayesha Syed Hasan","grade":"4","section":""},{"id":"4","name":"Ayra Afsheen","grade":"4","section":""},{"id":"5","name":"BIBI AYESHA SIDDIQUA","grade":"4","section":""},{"id":"6","name":"Habeeb Khan","grade":"4","section":""},{"id":"7","name":"MAHER UNNISA","grade":"4","section":""},{"id":"8","name":"Maira Mujeeb Khan","grade":"4","section":""},{"id":"9","name":"Maryam Ismail Shareef","grade":"4","section":""},{"id":"10","name":"Mir Anas Ali","grade":"4","section":""},{"id":"11","name":"Mohammed Ibrahim","grade":"4","section":""},{"id":"12","name":"MOHAMMED MALIK KHAN","grade":"4","section":""},{"id":"13","name":"Mohammed MizbaUddin","grade":"4","section":""},{"id":"14","name":"Mohammed Sohaan","grade":"4","section":""},{"id":"15","name":"Muhammad Ibrahim","grade":"4","section":""},{"id":"16","name":"Nida Fatima","grade":"4","section":""},{"id":"17","name":"Shaik Azaan","grade":"4","section":""},{"id":"18","name":"Syed Azaan Uddin","grade":"4","section":""},{"id":"19","name":"SYED FARHAN","grade":"4","section":""},{"id":"20","name":"Syed Mohammed Hussain","grade":"4","section":""},{"id":"21","name":"Syed Murtaza","grade":"4","section":""},{"id":"22","name":"Syed Mustafa","grade":"4","section":""},{"id":"23","name":"Syeda Hoorain","grade":"4","section":""},{"id":"24","name":"Syeda Zainab Afsheen","grade":"4","section":""},{"id":"25","name":"Tazkiya Tahreem","grade":"4","section":""},{"id":"26","name":"Zahra Fatima","grade":"4","section":""},{"id":"27","name":"ARHUM KHAN","grade":"5","section":""},{"id":"28","name":"BATUL FATIMA","grade":"5","section":""},{"id":"29","name":"DURAR HADI","grade":"5","section":""},{"id":"30","name":"KHADIJA FATIMA","grade":"5","section":""},{"id":"31","name":"MARIYAM FATIMA","grade":"5","section":""},{"id":"32","name":"MOHD AMMAR","grade":"5","section":""},{"id":"33","name":"ARZAN","grade":"5","section":""},{"id":"34","name":"MOHD FAIZ","grade":"5","section":""},{"id":"35","name":"MOHD MUHAMMED","grade":"5","section":""},{"id":"36","name":"ZAIN MAHMOOD","grade":"5","section":""},{"id":"37","name":"SYED AFFAN MEER","grade":"5","section":""},{"id":"38","name":"SYED AYAN AHMED","grade":"5","section":""},{"id":"39","name":"SYED MUHAMMMED","grade":"5","section":""},{"id":"40","name":"S. SAMAIRA NOOR","grade":"5","section":""},{"id":"41","name":"UMAIMA SHAIK","grade":"5","section":""},{"id":"42","name":"ZUNAIRA HYDER","grade":"5","section":""},{"id":"43","name":"ABDUL KABEER","grade":"6","section":""},{"id":"44","name":"ABDUL RAHMAN","grade":"6","section":""},{"id":"45","name":"AFEEFA FATIMA","grade":"6","section":""},{"id":"46","name":"AIZA SADIQ","grade":"6","section":""},{"id":"47","name":"ALEENA AZIN","grade":"6","section":""},{"id":"48","name":"ALIZA FATIMA","grade":"6","section":""},{"id":"49","name":"DANIYA LARAIB","grade":"6","section":""},{"id":"50","name":"JUVERIYA KAMAL","grade":"6","section":""},{"id":"51","name":"MADIHA BAKOOBAN","grade":"6","section":""},{"id":"52","name":"MOHD ABDUL RAYYAN","grade":"6","section":""},{"id":"53","name":"MOHAMMED SHUJA","grade":"6","section":""},{"id":"54","name":"SHAIK IBRAHIM","grade":"6","section":""},{"id":"55","name":"SYED AHMED ALI","grade":"6","section":""},{"id":"56","name":"SYED UZAIR","grade":"6","section":""},{"id":"57","name":"SYED ZUHAIR","grade":"6","section":""},{"id":"58","name":"TAMEEM RAHEEL BHAT","grade":"6","section":""},{"id":"59","name":"UMRA FATIMA","grade":"6","section":""},{"id":"60","name":"UZAIR KHAN","grade":"6","section":""},{"id":"61","name":"ZARA SALEEM","grade":"6","section":""},{"id":"62","name":"Abdullah Syed Hasan","grade":"7","section":""},{"id":"63","name":"Ahmed Bin Sawood Bakooban","grade":"7","section":""},{"id":"64","name":"Amatul Hameed Rumaisa","grade":"7","section":""},{"id":"65","name":"Ammara Faiz","grade":"7","section":""},{"id":"66","name":"Md Abdul Bari","grade":"7","section":""},{"id":"67","name":"Mohammed Abdul Salah","grade":"7","section":""},{"id":"68","name":"Mohammed Arhaan Uddin","grade":"7","section":""},{"id":"69","name":"Mohammed Rehan","grade":"7","section":""},{"id":"70","name":"Mohammed Shahriyar Khan","grade":"7","section":""},{"id":"71","name":"Mohd Arham Uddin","grade":"7","section":""},{"id":"72","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"7","section":""},{"id":"73","name":"Syed Khaja Ahsanuddin","grade":"7","section":""},{"id":"74","name":"Syed Rehan","grade":"7","section":""},{"id":"75","name":"Syed Yaheya Zain","grade":"7","section":""},{"id":"76","name":"Syeda Mahveen Fatima","grade":"7","section":""},{"id":"77","name":"Syeda Zunairah Begum","grade":"7","section":""},{"id":"78","name":"Uzair Imtiaz","grade":"7","section":""},{"id":"79","name":"Zunairah Amtul Aleem","grade":"7","section":""},{"id":"80","name":"Abdullah Syed Hasan","grade":"8","section":""},{"id":"81","name":"Ahmed Bin Sawood Bakooban","grade":"8","section":""},{"id":"82","name":"Amatul Hameed Rumaisa","grade":"8","section":""},{"id":"83","name":"Ammara Faiz","grade":"8","section":""},{"id":"84","name":"Md Abdul Bari","grade":"8","section":""},{"id":"85","name":"Mohammed Abdul Salah","grade":"8","section":""},{"id":"86","name":"Mohammed Arhaan Uddin","grade":"8","section":""},{"id":"87","name":"Mohammed Rehan","grade":"8","section":""},{"id":"88","name":"Mohammed Shahriyar Khan","grade":"8","section":""},{"id":"89","name":"Mohd Arham Uddin","grade":"8","section":""},{"id":"90","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"8","section":""},{"id":"91","name":"Syed Khaja Ahsanuddin","grade":"8","section":""},{"id":"92","name":"Syed Rehan","grade": "8", "section": ""}, {"id": "93", "name": "Syed Yaheya Zain", "grade": "8", "section": ""}, {"id": "94", "name": "Syeda Mahveen Fatima", "grade": "8", "section": ""}, {"id": "95", "name": "Syeda Zunairah Begum", "grade": "8", "section": ""}, {"id": "96", "name": "Uzair Imtiaz", "grade": "8", "section": ""}, {"id": "97", "name": "Zunairah Amtul Aleem", "grade": "8", "section": ""}];
 
-async function safeGet(key){
-  try{ const r = await window.storage.get(key, SHARED); return r ? r.value : null; }
-  catch(e){ return null; }
-}
-async function safeSet(key, value){
-  try{ await window.storage.set(key, value, SHARED); return true; }
-  catch(e){ console.error("storage set failed", e); return false; }
-}
+let state = {
+  view: "vote",
+  config: null,
+  votes: {},
+  voters: {}, 
+  roster: [],
+  houseRoster: [], 
+  houseVoters: {}, 
+  selectedGrade: "",
+  selectedStudentId: "",
+  selectedHouseGrade: "",
+  selectedHouseStudentId: "",
+  selections: {},
+  houseSelections: {},
+  error: "",
+  adminError: "",
+  isAdmin: false,
+  lastReceipt: null
+};
 
-async function loadAll(){
-  const rawConfig = await safeGet("election-config");
-  const rawVotes = await safeGet("election-votes");
-  const rawVoters = await safeGet("election-voters");
-  const rawRoster = await safeGet("election-roster");
-  const rawHouseRoster = await safeGet("election-house-roster");
-  const rawHouseVoters = await safeGet("election-house-voters");
+// SYNCHRONOUS RUN ENGINE: Loads directly from variables without crashing the page background loop
+function loadAllSync() {
+  try {
+    const rawConfig = localStorage.getItem("election-config");
+    const rawVotes = localStorage.getItem("election-votes");
+    const rawVoters = localStorage.getItem("election-voters");
+    const rawRoster = localStorage.getItem("election-roster");
+    const rawHouseRoster = localStorage.getItem("election-house-roster");
+    const rawHouseVoters = localStorage.getItem("election-house-voters");
 
-  state.config = rawConfig ? JSON.parse(rawConfig) : JSON.parse(JSON.stringify(DEFAULT_CONFIG));
-  state.votes = rawVotes ? JSON.parse(rawVotes) : {};
-  state.roster = rawRoster ? JSON.parse(rawRoster) : JSON.parse(JSON.stringify(DEFAULT_ROSTER));
-  state.houseRoster = rawHouseRoster ? JSON.parse(rawHouseRoster) : JSON.parse(JSON.stringify(state.roster));
+    state.config = rawConfig ? JSON.parse(rawConfig) : JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    state.votes = rawVotes ? JSON.parse(rawVotes) : {};
+    state.roster = rawRoster ? JSON.parse(rawRoster) : JSON.parse(JSON.stringify(DEFAULT_ROSTER));
+    state.houseRoster = rawHouseRoster ? JSON.parse(rawHouseRoster) : JSON.parse(JSON.stringify(state.roster));
 
-  if (rawVoters) {
-    try {
+    if (rawVoters) {
       const parsed = JSON.parse(rawVoters);
       state.voters = Array.isArray(parsed) ? parsed.reduce((acc, id) => ({...acc, [id]: 1}), {}) : parsed;
-    } catch(e) { state.voters = {}; }
-  } else { state.voters = {}; }
+    } else { state.voters = {}; }
 
-  if (rawHouseVoters) {
-    try { state.houseVoters = JSON.parse(rawHouseVoters); } catch(e) { state.houseVoters = {}; }
-  } else { state.houseVoters = {}; }
+    if (rawHouseVoters) {
+      state.houseVoters = JSON.parse(rawHouseVoters);
+    } else { state.houseVoters = {}; }
+  } catch (e) {
+    state.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    state.roster = JSON.parse(JSON.stringify(DEFAULT_ROSTER));
+    state.houseRoster = JSON.parse(JSON.stringify(DEFAULT_ROSTER));
+    state.votes = {}; state.voters = {}; state.houseVoters = {};
+  }
 }
 
-async function saveConfig(){ await safeSet("election-config", JSON.stringify(state.config)); }
-async function saveVotes(){ await safeSet("election-votes", JSON.stringify(state.votes)); }
-async function saveVoters(){ await safeSet("election-voters", JSON.stringify(state.voters)); }
-async function saveRoster(){ await safeSet("election-roster", JSON.stringify(state.roster)); }
-async function saveHouseRoster(){ await safeSet("election-house-roster", JSON.stringify(state.houseRoster)); }
-async function saveHouseVoters(){ await safeSet("election-house-voters", JSON.stringify(state.houseVoters)); }
+function saveConfig(){ try{ localStorage.setItem("election-config", JSON.stringify(state.config)); }catch(e){} }
+function saveVotes(){ try{ localStorage.setItem("election-votes", JSON.stringify(state.votes)); }catch(e){} }
+function saveVoters(){ try{ localStorage.setItem("election-voters", JSON.stringify(state.voters)); }catch(e){} }
+function saveRoster(){ try{ localStorage.setItem("election-roster", JSON.stringify(state.roster)); }catch(e){} }
+function saveHouseRoster(){ try{ localStorage.setItem("election-house-roster", JSON.stringify(state.houseRoster)); }catch(e){} }
+function saveHouseVoters(){ try{ localStorage.setItem("election-house-voters", JSON.stringify(state.houseVoters)); }catch(e){} }
 
 function esc(s){ const d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function normId(id){ return (id || "").trim().toLowerCase(); }
@@ -596,14 +604,12 @@ function attachHandlers(){
 
   const saveMetaBtn = document.getElementById('saveMetaBtn');
   if (saveMetaBtn){
-    saveMetaBtn.addEventListener('click', async () => {
+    saveMetaBtn.addEventListener('click', () => {
       state.config.schoolName = document.getElementById('schoolNameInput').value || state.config.schoolName;
       state.config.electionTitle = document.getElementById('electionTitleInput').value || state.config.electionTitle;
-      const logoFileEl = document.getElementById('schoolLogoFile');
       const logoUrlEl = document.getElementById('schoolLogoUrl');
-      const newLogo = (logoFileEl && logoFileEl.dataset.dataurl) || (logoUrlEl && logoUrlEl.value.trim()) || null;
-      if (newLogo) state.config.schoolLogo = newLogo;
-      await saveConfig();
+      if (logoUrlEl && logoUrlEl.value.trim()) state.config.schoolLogo = logoUrlEl.value.trim();
+      saveConfig();
       render();
     });
   }
@@ -613,50 +619,41 @@ function attachHandlers(){
     schoolLogoFile.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      schoolLogoFile.dataset.dataurl = await resizeImageFile(file, 300);
+      state.config.schoolLogo = await resizeImageFile(file, 300);
+      saveConfig();
+      render();
     });
   }
 
-  document.querySelectorAll('input[id^="newCandLogoFile-"]').forEach(inp => {
-    inp.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      inp.dataset.dataurl = await resizeImageFile(file, 160);
-    });
-  });
-
   document.querySelectorAll('[data-add-cand]').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const posId = btn.getAttribute('data-add-cand');
       const nameEl = document.getElementById('newCandName-' + posId);
       const name = nameEl.value.trim();
       if (!name) return;
       const sloganEl = document.getElementById('newCandSlogan-' + posId);
-      const logoFile = document.getElementById('newCandLogoFile-' + posId);
-      const logoUrl = document.getElementById('newCandLogoUrl-' + posId);
-      const logo = (logoFile && logoFile.dataset.dataurl) || (logoUrl.value.trim() || null);
       const pos = state.config.positions.find(p => p.id === posId);
-      pos.candidates.push({ id: genCandId(posId), name: name, slogan: sloganEl.value.trim(), logo: logo });
-      await saveConfig();
+      pos.candidates.push({ id: Math.random().toString(36).substring(7), name: name, slogan: sloganEl.value.trim(), logo: null });
+      saveConfig();
       render();
     });
   });
 
   document.querySelectorAll('[data-remove-cand]').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       const [posId, candId] = btn.getAttribute('data-remove-cand').split('|');
       const pos = state.config.positions.find(p => p.id === posId);
       pos.candidates = pos.candidates.filter(c => c.id !== candId);
-      await saveConfig();
+      saveConfig();
       render();
     });
   });
 
   const importRosterBtn = document.getElementById('importRosterBtn');
   if (importRosterBtn){
-    importRosterBtn.addEventListener('click', async () => {
+    importRosterBtn.addEventListener('click', () => {
       const added = importRosterText(document.getElementById('bulkRosterInput').value, false);
-      await saveRoster();
+      saveRoster();
       render();
       alert(added + ' general entries compiled.');
     });
@@ -664,9 +661,9 @@ function attachHandlers(){
 
   const importHouseRosterBtn = document.getElementById('importHouseRosterBtn');
   if (importHouseRosterBtn){
-    importHouseRosterBtn.addEventListener('click', async () => {
+    importHouseRosterBtn.addEventListener('click', () => {
       const added = importRosterText(document.getElementById('bulkHouseRosterInput').value, true);
-      await saveHouseRoster();
+      saveHouseRoster();
       render();
       alert(added + ' special entries compiled.');
     });
@@ -674,20 +671,20 @@ function attachHandlers(){
 
   const clearHouseRosterBtn = document.getElementById('clearHouseRosterBtn');
   if (clearHouseRosterBtn){
-    clearHouseRosterBtn.addEventListener('click', async () => {
+    clearHouseRosterBtn.addEventListener('click', () => {
       if (!confirm('Wipe special roster entries?')) return;
       state.houseRoster = [];
-      await saveHouseRoster();
+      saveHouseRoster();
       render();
     });
   }
 
   const resetVotesBtn = document.getElementById('resetVotesBtn');
   if (resetVotesBtn){
-    resetVotesBtn.addEventListener('click', async () => {
+    resetVotesBtn.addEventListener('click', () => {
       if (!confirm('Reset entire vote counting metrics?')) return;
       state.votes = {}; state.voters = {}; state.houseVoters = {};
-      await saveVotes(); await saveVoters(); await safeSet("election-house-voters", "{}");
+      saveVotes(); saveVoters(); saveHouseVoters();
       render();
     });
   }
@@ -718,7 +715,7 @@ function importRosterText(text, isHouse) {
   return count;
 }
 
-async function handleVoteSubmit(){
+function handleVoteSubmit(){
   if (!state.selectedGrade || !state.selectedStudentId){ state.error = "Voter profiling coordinates missing."; render(); return; }
   const student = state.roster.find(s => s.id === state.selectedStudentId);
   const canonicalId = normId(student.id);
@@ -734,15 +731,15 @@ async function handleVoteSubmit(){
   Object.values(state.selections).forEach(candId => { state.votes[candId] = (state.votes[candId] || 0) + 1; });
   state.voters[canonicalId] = votesCast + 1;
 
-  await saveVotes(); await saveVoters();
+  saveVotes(); saveVoters();
 
-  state.lastReceipt = { name: student.name, grade: student.grade, time: new Date().toLocaleString(), code: genReceiptCode(), votesRemaining: maxAllowed - (votesCast + 1) };
+  state.lastReceipt = { name: student.name, grade: student.grade, time: new Date().toLocaleString(), code: Math.random().toString(36).substring(3,9).toUpperCase(), votesRemaining: maxAllowed - (votesCast + 1) };
   state.lastVoteView = "vote";
   state.selections = {}; state.selectedGrade = ""; state.selectedStudentId = ""; state.view = "voted";
   render();
 }
 
-async function handleHouseVoteSubmit(){
+function handleHouseVoteSubmit(){
   if (!state.selectedHouseGrade || !state.selectedHouseStudentId){ state.error = "Special registration credentials missing."; render(); return; }
   const member = state.houseRoster.find(s => s.id === state.selectedHouseStudentId);
   const canonicalId = normId(member.id);
@@ -758,18 +755,17 @@ async function handleHouseVoteSubmit(){
   Object.values(state.houseSelections).forEach(candId => { state.votes[candId] = (state.votes[candId] || 0) + 1; });
   state.houseVoters[canonicalId] = votesCast + 1;
 
-  await saveVotes(); await saveHouseVoters();
+  saveVotes(); saveHouseVoters();
 
-  state.lastReceipt = { name: member.name, grade: member.grade, time: new Date().toLocaleString(), code: genReceiptCode(), votesRemaining: maxAllowed - (votesCast + 1) };
+  state.lastReceipt = { name: member.name, grade: member.grade, time: new Date().toLocaleString(), code: Math.random().toString(36).substring(3,9).toUpperCase(), votesRemaining: maxAllowed - (votesCast + 1) };
   state.lastVoteView = "house-vote";
   state.houseSelections = {}; state.selectedHouseGrade = ""; state.selectedHouseStudentId = ""; state.view = "voted";
   render();
 }
 
-(async function init(){
-  await loadAll();
-  render();
-})();
+// BOOT TIMING MATRIX: Synchronously fire render loops
+loadAllSync();
+render();
 </script>
 </body>
 </html>
