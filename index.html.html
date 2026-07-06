@@ -111,24 +111,25 @@
 </div>
 
 <script>
-// FORCE-PURGE ENTIRE CACHE STACK ON SYSTEM TERMINAL LOOPS
-(function nuclearClean() {
+// ENVIRONMENTAL BOOT ENGINE: Mount storage patch before anything else executes to avoid loading locks
+window.storage = window.storage || {
+  get: async function(key) { return { value: localStorage.getItem(key) }; },
+  set: async function(key, val) { localStorage.setItem(key, val); return true; }
+};
+
+// FORCE-PURGE PREVIOUS BROKEN OBJECTS FROM PHONES AND LAPTOPS INSTANTLY
+(function forceSyncFlush() {
   try {
     const versionKey = "election-app-version";
-    const currentSignature = "v6.0_nuclear_clean";
+    const currentSignature = "v7.0_flush_final";
     if (localStorage.getItem(versionKey) !== currentSignature) {
       localStorage.clear(); 
       localStorage.setItem(versionKey, currentSignature);
     }
   } catch (e) {
-    console.error("Purge loop blocked:", e);
+    console.error("Purge aborted:", e);
   }
 })();
-
-window.storage = {
-  get: async function(key) { return { value: localStorage.getItem(key) }; },
-  set: async function(key, val) { localStorage.setItem(key, val); return true; }
-};
 
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
@@ -215,146 +216,145 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// AUTOMATED DIRECTORY PIPELINE: Clean raw text blocks parsed inside code arrays to block manual array token breaks
-const STAFF_RAW_DATA = `
-FAC1,Mr. Mujtaba Khan,Faculty & Staff,Managing Director
-FAC2,Ms. Veena,Faculty & Staff,Academic Director
-FAC3,Ms. Syeda Mahjabeen,Faculty & Staff,Academic In charge
-FAC4,Ma. Asma Najeeb,Faculty & Staff,Academic Incharge(FLK)
-FAC5,Mr. Wahed,Faculty & Staff,Deeniyath HOD
-FAC6,Ms. Doris Shaik,Faculty & Staff,Admin Incharge
-FAC7,Ms. Mahjabeen,Faculty & Staff,In Charge
-FAC8,Ms. Seema Jabbar,Faculty & Staff,In Charge
-FAC26,Mr. Salman,Faculty & Staff,Admin
-FAC9,Ms. Shazia,Faculty & Staff,Teacher
-FAC10,Ms. Parveen,Faculty & Staff,Teacher
-FAC11,Ms. Rubeena,Faculty & Staff,Teacher
-FAC12,Ms. Yasmeen,Faculty & Staff,Teacher
-FAC13,Ms. Heena,Faculty & Staff,Teacher
-FAC14,Ms. Mariyam,Faculty & Staff,Teacher
-FAC15,Ms. Asfiya,Faculty & Staff,Teacher
-FAC16,Ms. Kahera,Faculty & Staff,Teacher
-FAC17,Ms. Zoya,Faculty & Staff,Teacher
-FAC18,Ms. Reshma,Faculty & Staff,Teacher
-FAC19,Ms. Masarath,Faculty & Staff,Teacher
-FAC20,Ms. Amena,Faculty & Staff,Teacher
-FAC21,Ms. Maheen,Faculty & Staff,Teacher
-FAC22,Mr. Jaleel,Faculty & Staff,Teacher
-FAC23,Mr. Fuzail,Faculty & Staff,Teacher
-FAC24,Mr. Loqman,Faculty & Staff,Teacher
-FAC25,Mr. Mohiuddin,Faculty & Staff,Teacher
-FAC32,Imran,Faculty & Staff,Driver
-FAC33,Hameed,Faculty & Staff,Driver
-FAC27,Khaled,Faculty & Staff,Watch man
-FAC28,M. Jyoti,Faculty & Staff,Supporting Staff
-FAC29,Savitri,Faculty & Staff,Supporting Staff
-FAC30,Noor,Faculty & Staff,Supporting Staff
-FAC31,Baleshwari,Faculty & Staff,Supporting Staff
-`.trim();
+// STRIPPED LINE GAPS: Defines values strictly flush left to guarantee error-free array generation loops
+const STAFF_RAW_DATA = 
+"FAC1,Mr. Mujtaba Khan,Faculty & Staff,Managing Director\n" +
+"FAC2,Ms. Veena,Faculty & Staff,Academic Director\n" +
+"FAC3,Ms. Syeda Mahjabeen,Faculty & Staff,Academic In charge\n" +
+"FAC4,Ma. Asma Najeeb,Faculty & Staff,Academic Incharge(FLK)\n" +
+"FAC5,Mr. Wahed,Faculty & Staff,Deeniyath HOD\n" +
+"FAC6,Ms. Doris Shaik,Faculty & Staff,Admin Incharge\n" +
+"FAC7,Ms. Mahjabeen,Faculty & Staff,In Charge\n" +
+"FAC8,Ms. Seema Jabbar,Faculty & Staff,In Charge\n" +
+"FAC26,Mr. Salman,Faculty & Staff,Admin\n" +
+"FAC9,Ms. Shazia,Faculty & Staff,Teacher\n" +
+"FAC10,Ms. Parveen,Faculty & Staff,Teacher\n" +
+"FAC11,Ms. Rubeena,Faculty & Staff,Teacher\n" +
+"FAC12,Ms. Yasmeen,Faculty & Staff,Teacher\n" +
+"FAC13,Ms. Heena,Faculty & Staff,Teacher\n" +
+"FAC14,Ms. Mariyam,Faculty & Staff,Teacher\n" +
+"FAC15,Ms. Asfiya,Faculty & Staff,Teacher\n" +
+"FAC16,Ms. Kahera,Faculty & Staff,Teacher\n" +
+"FAC17,Ms. Zoya,Faculty & Staff,Teacher\n" +
+"FAC18,Ms. Reshma,Faculty & Staff,Teacher\n" +
+"FAC19,Ms. Masarath,Faculty & Staff,Teacher\n" +
+"FAC20,Ms. Amena,Faculty & Staff,Teacher\n" +
+"FAC21,Ms. Maheen,Faculty & Staff,Teacher\n" +
+"FAC22,Mr. Jaleel,Faculty & Staff,Teacher\n" +
+"FAC23,Mr. Fuzail,Faculty & Staff,Teacher\n" +
+"FAC24,Mr. Loqman,Faculty & Staff,Teacher\n" +
+"FAC25,Mr. Mohiuddin,Faculty & Staff,Teacher\n" +
+"FAC32,Imran,Faculty & Staff,Driver\n" +
+"FAC33,Hameed,Faculty & Staff,Driver\n" +
+"FAC27,Khaled,Faculty & Staff,Watch man\n" +
+"FAC28,M. Jyoti,Faculty & Staff,Supporting Staff\n" +
+"FAC29,Savitri,Faculty & Staff,Supporting Staff\n" +
+"FAC30,Noor,Faculty & Staff,Supporting Staff\n" +
+"FAC31,Baleshwari,Faculty & Staff,Supporting Staff";
 
-const STUDENT_RAW_DATA = `
-1,Abdul Kabir,4
-2,Ali Bin Sawood Bakoban,4
-3,Ayesha Syed Hasan,4
-4,Ayra Afsheen,4
-5,BIBI AYESHA SIDDIQUA,4
-6,Habeeb Khan,4
-7,MAHER UNNISA,4
-8,Maira Mujeeb Khan,4
-9,Maryam Ismail Shareef,4
-10,Mir Anas Ali,4
-11,Mohammed Ibrahim,4
-12,MOHAMMED MALIK KHAN,4
-13,Mohammed MizbaUddin,4
-14,Mohammed Sohaan,4
-15,Muhammad Ibrahim,4
-16,Nida Fatima,4
-17,Shaik Azaan,4
-18,Syed Azaan Uddin,4
-19,SYED FARHAN,4
-20,Syed Mohammed Hussain,4
-21,Syed Murtaza,4
-22,Syed Mustafa,4
-23,Syeda Hoorain,4
-24,Syeda Zainab Afsheen,4
-25,Tazkiya Tahreem,4
-26,Zahra Fatima,4
-27,ARHUM KHAN,5
-28,BATUL FATIMA,5
-29,DURAR HADI,5
-30,KHADIJA FATIMA,5
-31,MARIYAM FATIMA,5
-32,MOHD AMMAR,5
-33,ARZAN,5
-34,MOHD FAIZ,5
-35,MOHD MUHAMMED,5
-36,ZAIN MAHMOOD,5
-37,SYED AFFAN MEER,5
-38,SYED AYAN AHMED,5
-39,SYED MUHAMMMED,5
-40,S. SAMAIRA NOOR,5
-41,UMAIMA SHAIK,5
-42,ZUNAIRA HYDER,5
-43,ABDUL KABEER,6
-44,ABDUL RAHMAN,6
-45,AFEEFA FATIMA,6
-46,AIZA SADIQ,6
-47,ALEENA AZIN,6
-48,ALIZA FATIMA,6
-49,DANIYA LARAIB,6
-50,JUVERIYA KAMAL,6
-51,MADIHA BAKOOBAN,6
-52,MOHD ABDUL RAYYAN,6
-53,MOHAMMED SHUJA,6
-54,SHAIK IBRAHIM,6
-55,SYED AHMED ALI,6
-56,SYED UZAIR,6
-57,SYED ZUHAIR,6
-58,TAMEEM RAHEEL BHAT,6
-59,UMRA FATIMA,6
-60,UZAIR KHAN,6
-61,ZARA SALEEM,6
-62,Abdullah Syed Hasan,7
-63,Ahmed Bin Sawood Bakooban,7
-64,Amatul Hameed Rumaisa,7
-65,Ammara Faiz,7
-66,Md Abdul Bari,7
-67,Mohammed Abdul Salah,7
-68,Mohammed Arhaan Uddin,7
-69,Mohammed Rehan,7
-70,Mohammed Shahriyar Khan,7
-71,Mohd Arham Uddin,7
-72,Shaik Abdul Fazl ur Rahman Quadri,7
-73,Syed Khaja Ahsanuddin,7
-74,Syed Rehan,7
-75,Syed Yaheya Zain,7
-76,Syeda Mahveen Fatima,7
-77,Syeda Zunairah Begum,7
-78,Uzair Imtiaz,7
-79,Zunairah Amtul Aleem,7
-80,Abdullah Syed Hasan,8
-81,Ahmed Bin Sawood Bakooban,8
-82,Amatul Hameed Rumaisa,8
-83,Ammara Faiz,8
-84,Md Abdul Bari,8
-85,Mohammed Abdul Salah,8
-86,Mohammed Arhaan Uddin,8
-87,Mohammed Rehan,8
-88,Mohammed Shahriyar Khan,8
-89,Mohd Arham Uddin,8
-90,Shaik Abdul Fazl ur Rahman Quadri,8
-91,Syed Khaja Ahsanuddin,8
-92,Syed Rehan,8
-93,Syed Yaheya Zain,8
-94,Syeda Mahveen Fatima,8
-95,Syeda Zunairah Begum,8
-96,Uzair Imtiaz,8
-97,Zunairah Amtul Aleem,8
-`.trim();
+const STUDENT_RAW_DATA = 
+"1,Abdul Kabir,4\n" +
+"2,Ali Bin Sawood Bakoban,4\n" +
+"3,Ayesha Syed Hasan,4\n" +
+"4,Ayra Afsheen,4\n" +
+"5,BIBI AYESHA SIDDIQUA,4\n" +
+"6,Habeeb Khan,4\n" +
+"7,MAHER UNNISA,4\n" +
+"8,Maira Mujeeb Khan,4\n" +
+"9,Maryam Ismail Shareef,4\n" +
+"10,Mir Anas Ali,4\n" +
+"11,Mohammed Ibrahim,4\n" +
+"12,MOHAMMED MALIK KHAN,4\n" +
+"13,Mohammed MizbaUddin,4\n" +
+"14,Mohammed Sohaan,4\n" +
+"15,Muhammad Ibrahim,4\n" +
+"16,Nida Fatima,4\n" +
+"17,Shaik Azaan,4\n" +
+"18,Syed Azaan Uddin,4\n" +
+"19,SYED FARHAN,4\n" +
+"20,Syed Mohammed Hussain,4\n" +
+"21,Syed Murtaza,4\n" +
+"22,Syed Mustafa,4\n" +
+"23,Syeda Hoorain,4\n" +
+"24,Syeda Zainab Afsheen,4\n" +
+"25,Tazkiya Tahreem,4\n" +
+"26,Zahra Fatima,4\n" +
+"27,ARHUM KHAN,5\n" +
+"28,BATUL FATIMA,5\n" +
+"29,DURAR HADI,5\n" +
+"30,KHADIJA FATIMA,5\n" +
+"31,MARIYAM FATIMA,5\n" +
+"32,MOHD AMMAR,5\n" +
+"33,ARZAN,5\n" +
+"34,MOHD FAIZ,5\n" +
+"35,MOHD MUHAMMED,5\n" +
+"36,ZAIN MAHMOOD,5\n" +
+"37,SYED AFFAN MEER,5\n" +
+"38,SYED AYAN AHMED,5\n" +
+"39,SYED MUHAMMMED,5\n" +
+"40,S. SAMAIRA NOOR,5\n" +
+"41,UMAIMA SHAIK,5\n" +
+"42,ZUNAIRA HYDER,5\n" +
+"43,ABDUL KABEER,6\n" +
+"44,ABDUL RAHMAN,6\n" +
+"45,AFEEFA FATIMA,6\n" +
+"46,AIZA SADIQ,6\n" +
+"47,ALEENA AZIN,6\n" +
+"48,ALIZA FATIMA,6\n" +
+"49,DANIYA LARAIB,6\n" +
+"50,JUVERIYA KAMAL,6\n" +
+"51,MADIHA BAKOOBAN,6\n" +
+"52,MOHD ABDUL RAYYAN,6\n" +
+"53,MOHAMMED SHUJA,6\n" +
+"54,SHAIK IBRAHIM,6\n" +
+"55,SYED AHMED ALI,6\n" +
+"56,SYED UZAIR,6\n" +
+"57,SYED ZUHAIR,6\n" +
+"58,TAMEEM RAHEEL BHAT,6\n" +
+"59,UMRA FATIMA,6\n" +
+"60,UZAIR KHAN,6\n" +
+"61,ZARA SALEEM,6\n" +
+"62,Abdullah Syed Hasan,7\n" +
+"63,Ahmed Bin Sawood Bakooban,7\n" +
+"64,Amatul Hameed Rumaisa,7\n" +
+"65,Ammara Faiz,7\n" +
+"66,Md Abdul Bari,7\n" +
+"67,Mohammed Abdul Salah,7\n" +
+"68,Mohammed Arhaan Uddin,7\n" +
+"69,Mohammed Rehan,7\n" +
+"70,Mohammed Shahriyar Khan,7\n" +
+"71,Mohd Arham Uddin,7\n" +
+"72,Shaik Abdul Fazl ur Rahman Quadri,7\n" +
+"73,Syed Khaja Ahsanuddin,7\n" +
+"74,Syed Rehan,7\n" +
+"75,Syed Yaheya Zain,7\n" +
+"76,Syeda Mahveen Fatima,7\n" +
+"77,Syeda Zunairah Begum,7\n" +
+"78,Uzair Imtiaz,7\n" +
+"79,Zunairah Amtul Aleem,7\n" +
+"80,Abdullah Syed Hasan,8\n" +
+"81,Ahmed Bin Sawood Bakooban,8\n" +
+"82,Amatul Hameed Rumaisa,8\n" +
+"83,Ammara Faiz,8\n" +
+"84,Md Abdul Bari,8\n" +
+"85,Mohammed Abdul Salah,8\n" +
+"86,Mohammed Arhaan Uddin,8\n" +
+"87,Mohammed Rehan,8\n" +
+"88,Mohammed Shahriyar Khan,8\n" +
+"89,Mohd Arham Uddin,8\n" +
+"90,Shaik Abdul Fazl ur Rahman Quadri,8\n" +
+"91,Syed Khaja Ahsanuddin,8\n" +
+"92,Syed Rehan,8\n" +
+"93,Syed Yaheya Zain,8\n" +
+"94,Syeda Mahveen Fatima,8\n" +
+"95,Syeda Zunairah Begum,8\n" +
+"96,Uzair Imtiaz,8\n" +
+"97,Zunairah Amtul Aleem,8";
 
-function parseDirectory(rawData) {
+function parseDirectory(text) {
   const output = [];
-  rawData.split("\n").forEach(line => {
+  if(!text) return output;
+  text.split("\n").forEach(line => {
     const parts = line.split(",");
     if (parts.length >= 3) {
       output.push({
