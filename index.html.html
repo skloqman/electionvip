@@ -60,10 +60,9 @@
   .bubble{width:22px; height:22px; border-radius:50%; border:2px solid var(--ink); flex-shrink:0; position:relative; transition:background .15s ease;}
   .candidate-row.selected .bubble{background:var(--ink);}
   .candidate-row.selected .bubble::after{content:""; position:absolute; inset:5px; border-radius:50%; background:var(--heading);}
-  .cand-media{position:relative; width:56px; height:56px; flex-shrink:0;}
-  .avatar-img{width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid var(--line); display:block;}
-  .avatar-fallback{width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ink); color:var(--gold); font-family:'Fraunces',serif; font-weight:700; font-size:20px; border:2px solid var(--line);}
-  .logo-badge{position:absolute; right:-4px; bottom:-4px; width:24px; height:24px; border-radius:6px; background:#fff; border:1.5px solid var(--line); object-fit:cover; padding:1px;}
+  .cand-media{position:relative; width:44px; height:44px; flex-shrink:0;}
+  .logo-badge{width:44px; height:44px; border-radius:6px; background:#fff; border:1.5px solid var(--line); object-fit:cover; padding:2px; display:block;}
+  .logo-badge-fallback{width:44px; height:44px; border-radius:6px; border:1.5px dashed var(--line); display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-light); background:var(--paper-dark);}
   .cand-name{font-weight:600; font-size:15px;}
   .cand-slogan{font-size:13px; color:var(--ink-light); font-style:italic; margin-top:2px;}
   .stamp{display:inline-block; border:3px solid var(--red-seal); color:var(--red-seal); font-family:'IBM Plex Mono',monospace; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:10px 18px; border-radius:6px; transform:rotate(-6deg); opacity:0; animation:stampIn .4s ease forwards .1s;}
@@ -72,8 +71,8 @@
   .bar-row{margin-bottom:14px;}
   .bar-label{display:flex; justify-content:space-between; align-items:center; font-size:14px; margin-bottom:5px; gap:8px;}
   .bar-name-wrap{display:flex; align-items:center; gap:8px;}
-  .mini-avatar-img{width:22px; height:22px; border-radius:50%; object-fit:cover; border:1px solid var(--line);}
-  .mini-avatar-fallback{width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--ink); color:var(--gold); font-size:10px; font-weight:700; font-family:'Fraunces',serif;}
+  .mini-logo-img{width:24px; height:24px; border-radius:4px; object-fit:cover; border:1px solid var(--line);}
+  .mini-logo-fallback{width:24px; height:24px; border-radius:4px; background:var(--ink); color:var(--paper); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;}
   .bar-name{font-weight:600;}
   .bar-count{font-family:'IBM Plex Mono',monospace; color:var(--ink-light); flex-shrink:0;}
   .bar-track{height:10px; background:var(--paper-dark); border-radius:5px; overflow:hidden;}
@@ -112,12 +111,11 @@
 </div>
 
 <script>
-if (!window.storage) {
-  window.storage = {
-    get: async function(key) { return { value: localStorage.getItem(key) }; },
-    set: async function(key, val) { localStorage.setItem(key, val); return true; }
-  };
-}
+// CRITICAL: Ensure local environmental storage modules bind completely before running downstream functions
+window.storage = window.storage || {
+  get: async function(key) { return { value: localStorage.getItem(key) }; },
+  set: async function(key, val) { localStorage.setItem(key, val); return true; }
+};
 
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
@@ -130,76 +128,76 @@ const DEFAULT_CONFIG = {
   schoolLogo: null,
   positions: [
     { id: "headboy", title: "Head Boy", candidates: [
-        { id: "hb-a", name: "Khaja Ahsan Uddin (G8)", slogan: "Leadership & Integrity", photo: null, logo: null },
-        { id: "hb-b", name: "Yahiya Zain (G8)", slogan: "Progress Together", photo: null, logo: null }
+        { id: "hb-a", name: "Khaja Ahsan Uddin (G8)", slogan: "Leadership & Integrity", logo: null },
+        { id: "hb-b", name: "Yahiya Zain (G8)", slogan: "Progress Together", logo: null }
       ]},
     { id: "headgirl", title: "Head Girl", candidates: [
-        { id: "hg-a", name: "Zunairah Begum (G8)", slogan: "Empowering Voices", photo: null, logo: null },
-        { id: "hg-b", name: "Zunairah Amtul Aleem (G8)", slogan: "Unity & Excellence", photo: null, logo: null }
+        { id: "hg-a", name: "Zunairah Begum (G8)", slogan: "Empowering Voices", logo: null },
+        { id: "hg-b", name: "Zunairah Amtul Aleem (G8)", slogan: "Unity & Excellence", logo: null }
       ]},
     { id: "deptprefectboy", title: "Dept. Prefect Boy", candidates: [
-        { id: "dpb-a", name: "Ahmed Bakooban (G8)", slogan: "Dedication & Order", photo: null, logo: null },
-        { id: "dpb-b", name: "Arhum Uddin (G8)", slogan: "Commitment to Change", photo: null, logo: null }
+        { id: "dpb-a", name: "Ahmed Bakooban (G8)", slogan: "Dedication & Order", logo: null },
+        { id: "dpb-b", name: "Arhum Uddin (G8)", slogan: "Commitment to Change", logo: null }
       ]},
     { id: "deptprefectgirl", title: "Dept. Prefect Girl", candidates: [
-        { id: "dpg-a", name: "Ammara Faiz (G8)", slogan: "Striving for Perfection", photo: null, logo: null },
-        { id: "dpg-b", name: "Sidra Fatima (G7)", slogan: "Service & Honor", photo: null, logo: null }
+        { id: "dpg-a", name: "Ammara Faiz (G8)", slogan: "Striving for Perfection", logo: null },
+        { id: "dpg-b", name: "Sidra Fatima (G7)", slogan: "Service & Honor", logo: null }
       ]},
     { id: "sportscaptain", title: "Sports Captain", candidates: [
-        { id: "sc-a", name: "Ahmad Ali (G6)", slogan: "Teamwork & Victory", photo: null, logo: null },
-        { id: "sc-b", name: "Aziz (G7)", slogan: "Strength & Sportsmanship", photo: null, logo: null }
+        { id: "sc-a", name: "Ahmad Ali (G6)", slogan: "Teamwork & Victory", logo: null },
+        { id: "sc-b", name: "Aziz (G7)", slogan: "Strength & Sportsmanship", logo: null }
       ]},
     { id: "sportsvicecaptain", title: "Sports Vice Captain", candidates: [
-        { id: "svc-a", name: "Juveriya Fatima (G7)", slogan: "Resilience & Grit", photo: null, logo: null },
-        { id: "svc-b", name: "Madiha Bakooban (G6)", slogan: "Play Fair, Lead Well", photo: null, logo: null }
+        { id: "svc-a", name: "Juveriya Fatima (G7)", slogan: "Resilience & Grit", logo: null },
+        { id: "svc-b", name: "Madiha Bakooban (G6)", slogan: "Play Fair, Lead Well", logo: null }
       ]},
     { id: "ecogroupcaptain", title: "Eco Group Captain", candidates: [
-        { id: "egc-a", name: "Zara Saleem (G6)", slogan: "Green Mind, Pure Earth", photo: null, logo: null },
-        { id: "egc-b", name: "Samaira Noor (G5)", slogan: "Sustainability First", photo: null, logo: null }
+        { id: "egc-a", name: "Zara Saleem (G6)", slogan: "Green Mind, Pure Earth", logo: null },
+        { id: "egc-b", name: "Samaira Noor (G5)", slogan: "Sustainability First", logo: null }
       ]},
     { id: "ecogroupvicecaptain", title: "Eco Group Vice Captain", candidates: [
-        { id: "egvc-a", name: "Abdul Rahman (G6)", slogan: "Protect & Preserve", photo: null, logo: null },
-        { id: "egvc-b", name: "Rayyan (G6)", slogan: "Small Actions, Big Impact", photo: null, logo: null }
+        { id: "egvc-a", name: "Abdul Rahman (G6)", slogan: "Protect & Preserve", logo: null },
+        { id: "egvc-b", name: "Rayyan (G6)", slogan: "Small Actions, Big Impact", logo: null }
       ]},
     { id: "apple_captain", title: "Apple Group Captain", candidates: [
-        { id: "ac-a", name: "Arhaan Uddin (G8)", slogan: "Lead by Example", photo: null, logo: null },
-        { id: "ac-b", name: "Abdul Kabeer (G6)", slogan: "Strength in Unity", photo: null, logo: null }
+        { id: "ac-a", name: "Arhaan Uddin (G8)", slogan: "Lead by Example", logo: null },
+        { id: "ac-b", name: "Abdul Kabeer (G6)", slogan: "Strength in Unity", logo: null }
       ]},
     { id: "apple_vicecaptain", title: "Apple Group Vice Captain", candidates: [
-        { id: "avc-a", name: "Maryam Fatima (G5)", slogan: "Determination Wins", photo: null, logo: null },
-        { id: "avc-b", name: "Ummul Hamda (G7)", slogan: "Bright Futures Ahead", photo: null, logo: null }
+        { id: "avc-a", name: "Maryam Fatima (G5)", slogan: "Determination Wins", logo: null },
+        { id: "avc-b", name: "Ummul Hamda (G7)", slogan: "Bright Futures Ahead", logo: null }
       ]},
     { id: "challengers_captain", title: "Challengers House Captain", candidates: [
-        { id: "cc-a", name: "Taha Syed Najeeb (G7)", slogan: "Fearless & Bold", photo: null, logo: null },
-        { id: "cc-b", name: "Muhammed (G5)", slogan: "Rise to the Challenge", photo: null, logo: null }
+        { id: "cc-a", name: "Taha Syed Najeeb (G7)", slogan: "Fearless & Bold", logo: null },
+        { id: "cc-b", name: "Muhammed (G5)", slogan: "Rise to the Challenge", logo: null }
       ]},
     { id: "challengers_vicecaptain", title: "Challengers House Vice Captain", candidates: [
-        { id: "cvc-a", name: "Syed Uzair (G6)", slogan: "Loyal & Focused", photo: null, logo: null },
-        { id: "cvc-b", name: "Furqan (G7)", slogan: "Persist and Prevail", photo: null, logo: null }
+        { id: "cvc-a", name: "Syed Uzair (G6)", slogan: "Loyal & Focused", logo: null },
+        { id: "cvc-b", name: "Furqan (G7)", slogan: "Persist and Prevail", logo: null }
       ]},
     { id: "champions_captain", title: "Champions House Captain", candidates: [
-        { id: "chc-a", name: "Tameem Rahil Bhat (G6)", slogan: "Born to Win", photo: null, logo: null },
-        { id: "chc-b", name: "Abdullah Syed Hassan (G8)", slogan: "Excellence Everyday", photo: null, logo: null }
+        { id: "chc-a", name: "Tameem Rahil Bhat (G6)", slogan: "Born to Win", logo: null },
+        { id: "chc-b", name: "Abdullah Syed Hassan (G8)", slogan: "Excellence Everyday", logo: null }
       ]},
     { id: "champions_vicecaptain", title: "Champions House Vice Captain", candidates: [
-        { id: "chvc-a", name: "Saddiq Qureshi (G7)", slogan: "Integrity & Power", photo: null, logo: null },
-        { id: "chvc-b", name: "Zain Mahmood (G5)", slogan: "True Champions Strive", photo: null, logo: null }
+        { id: "chvc-a", name: "Saddiq Qureshi (G7)", slogan: "Integrity & Power", logo: null },
+        { id: "chvc-b", name: "Zain Mahmood (G5)", slogan: "True Champions Strive", logo: null }
       ]},
     { id: "superiors_captain", title: "Superiors House Captain", candidates: [
-        { id: "suc-a", name: "Rabah Ur Rahman (G7)", slogan: "Aim Higher", photo: null, logo: null },
-        { id: "suc-b", name: "Sanaullah (G7)", slogan: "Excellence and Beyond", photo: null, logo: null }
+        { id: "suc-a", name: "Rabah Ur Rahman (G7)", slogan: "Aim Higher", logo: null },
+        { id: "suc-b", name: "Sanaullah (G7)", slogan: "Excellence and Beyond", logo: null }
       ]},
     { id: "superiors_vicecaptain", title: "Superiors House Vice Captain", candidates: [
-        { id: "suvc-a", name: "Arbiya Fatima (G7)", slogan: "Strive Natively", photo: null, logo: null },
-        { id: "suvc-b", name: "Afeefah Fatima (G6)", slogan: "Honor & Grace", photo: null, logo: null }
+        { id: "suvc-a", name: "Arbiya Fatima (G7)", slogan: "Strive Natively", logo: null },
+        { id: "suvc-b", name: "Afeefah Fatima (G6)", slogan: "Honor & Grace", logo: null }
       ]},
     { id: "warriors_captain", title: "Warriors House Captain", candidates: [
-        { id: "wc-a", name: "Munnaza Zareen (G7)", slogan: "Victory is Ours", photo: null, logo: null },
-        { id: "wc-b", name: "Zunairah Hyder (G5)", slogan: "Fight with Courage", photo: null, logo: null }
+        { id: "wc-a", name: "Munnaza Zareen (G7)", slogan: "Victory is Ours", logo: null },
+        { id: "wc-b", name: "Zunairah Hyder (G5)", slogan: "Fight with Courage", logo: null }
       ]},
     { id: "warriors_vicecaptain", title: "Warriors House Vice Captain", candidates: [
-        { id: "wvc-a", name: "Durar Hadi (G5)", slogan: "Never Give Up", photo: null, logo: null },
-        { id: "wvc-b", name: "Syeda Mahreen (G7)", slogan: "Unstoppable Strength", photo: null, logo: null }
+        { id: "wvc-a", name: "Durar Hadi (G5)", slogan: "Never Give Up", logo: null },
+        { id: "wvc-b", name: "Syeda Mahreen (G7)", slogan: "Unstoppable Strength", logo: null }
       ]}
   ]
 };
@@ -283,7 +281,6 @@ async function loadAll(){
   state.votes = rawVotes ? JSON.parse(rawVotes) : {};
   state.roster = rawRoster ? JSON.parse(rawRoster) : JSON.parse(JSON.stringify(DEFAULT_ROSTER));
   
-  // Clone staff details into the default special house roster if empty
   if (rawHouseRoster) {
     state.houseRoster = JSON.parse(rawHouseRoster);
   } else {
@@ -341,11 +338,11 @@ function resizeImageFile(file, maxDim){
   });
 }
 
-function avatarHtml(name, photo, sizeClass){
+function logoHtml(photo){
   if (photo){
-    return '<img class="' + (sizeClass==='mini' ? 'mini-avatar-img' : 'avatar-img') + '" src="' + photo + '" alt="">';
+    return '<img class="logo-badge" src="' + photo + '" alt="">';
   }
-  return '<div class="' + (sizeClass==='mini' ? 'mini-avatar-fallback' : 'avatar-fallback') + '">' + esc(initials(name)) + '</div>';
+  return '<div class="logo-badge-fallback">LOGO</div>';
 }
 
 function render(){
@@ -424,7 +421,6 @@ function renderVote(cfg){
   html += '</div></div>';
 
   html += '<form id="ballotForm">';
-  // Display clean core leadership roles here
   cfg.positions.filter(p => !p.id.includes("captain") && !p.id.includes("vicecaptain") && !p.id.includes("group")).forEach(pos => {
     html += '<div class="card"><div class="card-inner position-block">';
     html += '<div class="position-title">' + esc(pos.title) + ' <span class="count">choose one</span></div>';
@@ -432,7 +428,7 @@ function renderVote(cfg){
       const selected = state.selections[pos.id] === c.id;
       html += '<div class="candidate-row ' + (selected ? "selected":"") + '" data-pos="' + pos.id + '" data-cand="' + c.id + '">';
       html += '<div class="bubble"></div>';
-      html += '<div class="cand-media">' + avatarHtml(c.name, c.photo, 'full') + '</div>';
+      html += '<div class="cand-media">' + logoHtml(c.logo) + '</div>';
       html += '<div><div class="cand-name">' + esc(c.name) + '</div></div></div>';
     });
     html += '</div></div>';
@@ -468,7 +464,6 @@ function renderHouseVote(cfg){
     let canonicalId = normId(s.id);
     let votesCast = state.houseVoters[canonicalId] || 0;
     
-    // Faculty/Staff can vote twice on Special Votes as well
     let maxAllowed = s.grade === "Faculty & Staff" ? 2 : 1;
     if (votesCast >= maxAllowed) {
       html += '<option value="' + esc(s.id) + '" disabled style="color:#bbb;">' + esc(s.name) + detailSuffix + ' (Already Voted)</option>';
@@ -482,7 +477,6 @@ function renderHouseVote(cfg){
   html += '</div></div>';
 
   html += '<form id="houseBallotForm">';
-  // Display only Captain / Vice Captain / Group selections here
   cfg.positions.filter(p => p.id.includes("captain") || p.id.includes("vicecaptain") || p.id.includes("group")).forEach(pos => {
     html += '<div class="card"><div class="card-inner position-block">';
     html += '<div class="position-title">' + esc(pos.title) + ' <span class="count">choose one</span></div>';
@@ -490,7 +484,7 @@ function renderHouseVote(cfg){
       const selected = state.houseSelections[pos.id] === c.id;
       html += '<div class="candidate-row ' + (selected ? "selected":"") + '" data-house-pos="' + pos.id + '" data-house-cand="' + c.id + '">';
       html += '<div class="bubble"></div>';
-      html += '<div class="cand-media">' + avatarHtml(c.name, c.photo, 'full') + '</div>';
+      html += '<div class="cand-media">' + logoHtml(c.logo) + '</div>';
       html += '<div><div class="cand-name">' + esc(c.name) + '</div></div></div>';
     });
     html += '</div></div>';
@@ -526,7 +520,7 @@ function renderResults(cfg){
     counts.sort((a,b)=>b.count-a.count).forEach((c,i) => {
       const pct = total > 0 ? Math.round((c.count/total)*100) : 0;
       html += '<div class="bar-row">';
-      html += '<div class="bar-label"><div class="bar-name-wrap">' + avatarHtml(c.name, c.photo, 'mini') + '<span class="bar-name">' + esc(c.name) + '</span></div><span class="bar-count">' + c.count + ' (' + pct + '%)</span></div>';
+      html += '<div class="bar-label"><div class="bar-name-wrap"><span class="bar-name">' + esc(c.name) + '</span></div><span class="bar-count">' + c.count + ' (' + pct + '%)</span></div>';
       html += '<div class="bar-track"><div class="bar-fill ' + (i===0 && c.count>0 ? "leader":"") + '" style="width:' + (c.count/maxCount*100) + '%"></div></div>';
       html += '</div>';
     });
@@ -547,6 +541,35 @@ function renderAdminLogin(){
 function renderAdmin(cfg){
   let html = '<div class="position-title" style="margin:0 0 14px 4px;">Live Results</div>';
   html += renderResults(cfg);
+
+  html += '<div class="card"><div class="card-inner">';
+  html += '<label class="field-label">School Name</label><input type="text" id="schoolNameInput" value="' + esc(cfg.schoolName) + '">';
+  html += '<div style="height:12px;"></div><label class="field-label">Election Title</label><input type="text" id="electionTitleInput" value="' + esc(cfg.electionTitle) + '">';
+  html += '<div style="height:14px;"></div><label class="field-label">School Logo</label>';
+  if (cfg.schoolLogo) html += '<img src="' + cfg.schoolLogo + '" alt="Current logo" style="max-height:60px; display:block; margin-bottom:8px;">';
+  html += '<input type="file" accept="image/*" id="schoolLogoFile"><div class="field-hint">...or paste a logo URL</div><input type="text" placeholder="https://..." id="schoolLogoUrl">';
+  html += '<div style="height:14px;"></div><button class="btn small-btn" id="saveMetaBtn" style="padding:10px 16px;">Save Settings</button>';
+  html += '</div></div>';
+
+  cfg.positions.forEach(pos => {
+    html += '<div class="card"><div class="card-inner">';
+    html += '<div class="position-title">' + esc(pos.title) + '</div>';
+    pos.candidates.forEach(c => {
+      html += '<div class="admin-list-item"><div class="left">' +
+        '<span>' + esc(c.name) + (c.slogan ? ' &mdash; "' + esc(c.slogan) + '"' : '') + '</span></div>' +
+        '<button class="small-btn danger" data-remove-cand="' + pos.id + '|' + c.id + '">Remove</button></div>';
+    });
+    html += '<div class="divider-label">Add Candidate</div>';
+    html += '<div class="row-flex">';
+    html += '<input type="text" placeholder="Candidate name" id="newCandName-' + pos.id + '">';
+    html += '<input type="text" placeholder="Slogan (optional)" id="newCandSlogan-' + pos.id + '">';
+    html += '</div><div style="height:8px;"></div>';
+    html += '<div class="row-flex">';
+    html += '<div style="flex:1; min-width:160px;"><label class="field-hint">Campaign logo: upload</label><input type="file" accept="image/*" id="newCandLogoFile-' + pos.id + '"><label class="field-hint">...or paste a logo URL</label><input type="text" placeholder="https://..." id="newCandLogoUrl-' + pos.id + '"></div>';
+    html += '</div><div style="height:10px;"></div>';
+    html += '<button class="small-btn" data-add-cand="' + pos.id + '">Add Candidate</button>';
+    html += '</div></div>';
+  });
 
   html += '<div class="card"><div class="card-inner">';
   html += '<div class="position-title">General Election Roster <span class="count">' + state.roster.length + ' registered</span></div>';
@@ -634,6 +657,64 @@ function attachHandlers(){
       render();
     });
   }
+
+  const saveMetaBtn = document.getElementById('saveMetaBtn');
+  if (saveMetaBtn){
+    saveMetaBtn.addEventListener('click', async () => {
+      state.config.schoolName = document.getElementById('schoolNameInput').value || state.config.schoolName;
+      state.config.electionTitle = document.getElementById('electionTitleInput').value || state.config.electionTitle;
+      const logoFileEl = document.getElementById('schoolLogoFile');
+      const logoUrlEl = document.getElementById('schoolLogoUrl');
+      const newLogo = (logoFileEl && logoFileEl.dataset.dataurl) || (logoUrlEl && logoUrlEl.value.trim()) || null;
+      if (newLogo) state.config.schoolLogo = newLogo;
+      await saveConfig();
+      render();
+    });
+  }
+
+  const schoolLogoFile = document.getElementById('schoolLogoFile');
+  if (schoolLogoFile){
+    schoolLogoFile.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      schoolLogoFile.dataset.dataurl = await resizeImageFile(file, 300);
+    });
+  }
+
+  document.querySelectorAll('input[id^="newCandLogoFile-"]').forEach(inp => {
+    inp.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      inp.dataset.dataurl = await resizeImageFile(file, 160);
+    });
+  });
+
+  document.querySelectorAll('[data-add-cand]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const posId = btn.getAttribute('data-add-cand');
+      const nameEl = document.getElementById('newCandName-' + posId);
+      const name = nameEl.value.trim();
+      if (!name) return;
+      const sloganEl = document.getElementById('newCandSlogan-' + posId);
+      const logoFile = document.getElementById('newCandLogoFile-' + posId);
+      const logoUrl = document.getElementById('newCandLogoUrl-' + posId);
+      const logo = (logoFile && logoFile.dataset.dataurl) || (logoUrl.value.trim() || null);
+      const pos = state.config.positions.find(p => p.id === posId);
+      pos.candidates.push({ id: genCandId(posId), name: name, slogan: sloganEl.value.trim(), logo: logo });
+      await saveConfig();
+      render();
+    });
+  });
+
+  document.querySelectorAll('[data-remove-cand]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const [posId, candId] = btn.getAttribute('data-remove-cand').split('|');
+      const pos = state.config.positions.find(p => p.id === posId);
+      pos.candidates = pos.candidates.filter(c => c.id !== candId);
+      await saveConfig();
+      render();
+    });
+  });
 
   const importRosterBtn = document.getElementById('importRosterBtn');
   if (importRosterBtn){
@@ -748,6 +829,15 @@ async function handleHouseVoteSubmit(){
   state.houseSelections = {}; state.selectedHouseGrade = ""; state.selectedHouseStudentId = ""; state.view = "voted";
   render();
 }
+
+function genCandId(posId){ return posId + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function genPosId(title){ return title.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,20) + '-' + Date.now().toString(36).slice(-4); }
+function genReceiptCode(){ return Math.random().toString(36).slice(2,6).toUpperCase() + '-' + Math.random().toString(36).slice(2,6).toUpperCase(); }
+
+(async function init(){
+  await loadAll();
+  render();
+})();
 </script>
 </body>
 </html>
