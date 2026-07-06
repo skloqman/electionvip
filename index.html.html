@@ -112,7 +112,6 @@
 </div>
 
 <script>
-// CRITICAL: Initialize environmental storage wrappers at the absolute top of the runtime execution path
 if (!window.storage) {
   window.storage = {
     get: async function(key) { return { value: localStorage.getItem(key) }; },
@@ -149,7 +148,6 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// Complete roster data from your files
 const DEFAULT_ROSTER = [
   {"id": "FAC1", "name": "Mr. Mujtaba Khan", "grade": "Faculty & Staff", "section": "Managing Director"},
   {"id": "FAC2", "name": "Ms. Veena", "grade": "Faculty & Staff", "section": "Academic Director"},
@@ -320,6 +318,7 @@ function renderVote(cfg){
   let html = '<div class="card"><div class="card-inner">';
   if (state.error) html += '<div class="msg-banner error">' + esc(state.error) + '</div>';
 
+  // FIX: Fixed sorting logic to handle string values like "Faculty & Staff" safely
   const gradesWithStudents = Array.from(new Set(state.roster.map(s => String(s.grade)))).sort((a, b) => {
     if (a === "Faculty & Staff") return -1;
     if (b === "Faculty & Staff") return 1;
