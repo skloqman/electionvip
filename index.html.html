@@ -111,17 +111,24 @@
 </div>
 
 <script>
-// ENVIRONMENTAL SYNC CLEANER: Always clear past system locks instantly on run
-(function clearOldLocks() {
+// FORCE-PURGE HARD RESET TRACKER ON LOAD
+(function forceResetPipeline() {
   try {
-    const freshVersion = "v9.0_sync_rebuild";
-    if (localStorage.getItem("app_layout_version") !== freshVersion) {
-      localStorage.clear();
-      localStorage.setItem("app_layout_version", freshVersion);
+    const versionKey = "election-app-version";
+    const currentSignature = "v11.0_designation_update";
+    if (localStorage.getItem(versionKey) !== currentSignature) {
+      localStorage.clear(); 
+      localStorage.setItem(versionKey, currentSignature);
     }
-  } catch(e) {}
+  } catch (e) {}
 })();
 
+window.storage = {
+  get: async function(key) { return { value: localStorage.getItem(key) }; },
+  set: async function(key, val) { localStorage.setItem(key, val); return true; }
+};
+
+const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
 
 const DEFAULT_CONFIG = {
@@ -206,30 +213,9 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// SYNCHRONOUS INITIALIZATION DATA MATRICES: Prevents browser string token parsing errors entirely[cite: 1]
-const DEFAULT_ROSTER = [{"id":"FAC1","name":"Mr. Mujtaba Khan","grade":"Faculty & Staff","section":"Managing Director"},{"id":"FAC2","name":"Ms. Veena","grade":"Faculty & Staff","section":"Academic Director"},{"id":"FAC3","name":"Ms. Syeda Mahjabeen","grade":"Faculty & Staff","section":"Academic In charge"},{"id":"FAC4","name":"Ma. Asma Najeeb","grade":"Faculty & Staff","section":"Academic Incharge(FLK)"},{"id":"FAC5","name":"Mr. Wahed","grade":"Faculty & Staff","section":"Deeniyath HOD"},{"id":"FAC6","name":"Ms. Doris Shaik","grade":"Faculty & Staff","section":"Admin Incharge"},{"id":"FAC7","name":"Ms. Mahjabeen","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC8","name":"Ms. Seema Jabbar","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC26","name":"Mr. Salman","grade":"Faculty & Staff","section":"Admin"},{"id":"FAC9","name":"Ms. Shazia","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC10","name":"Ms. Parveen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC11","name":"Ms. Rubeena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC12","name":"Ms. Yasmeen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC13","name":"Ms. Heena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC14","name":"Ms. Mariyam","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC15","name":"Ms. Asfiya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC16","name":"Ms. Kahera","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC17","name":"Ms. Zoya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC18","name":"Ms. Reshma","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC19","name":"Ms. Masarath","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC20","name":"Ms. Amena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC21","name":"Ms. Maheen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC22","name":"Mr. Jaleel","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC23","name":"Mr. Fuzail","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC24","name":"Mr. Loqman","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC25","name":"Mr. Mohiuddin","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC32","name":"Imran","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC33","name":"Hameed","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC27","name":"Khaled","grade":"Faculty & Staff","section":"Watch man"},{"id":"FAC28","name":"M. Jyoti","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC29","name":"Savitri","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC30","name":"Noor","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC31","name":"Baleshwari","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"1","name":"Abdul Kabir","grade":"4","section":""},{"id":"2","name":"Ali Bin Sawood Bakoban","grade":"4","section":""},{"id":"3","name":"Ayesha Syed Hasan","grade":"4","section":""},{"id":"4","name":"Ayra Afsheen","grade":"4","section":""},{"id":"5","name":"BIBI AYESHA SIDDIQUA","grade":"4","section":""},{"id":"6","name":"Habeeb Khan","grade":"4","section":""},{"id":"7","name":"MAHER UNNISA","grade":"4","section":""},{"id":"8","name":"Maira Mujeeb Khan","grade":"4","section":""},{"id":"9","name":"Maryam Ismail Shareef","grade":"4","section":""},{"id":"10","name":"Mir Anas Ali","grade":"4","section":""},{"id":"11","name":"Mohammed Ibrahim","grade":"4","section":""},{"id":"12","name":"MOHAMMED MALIK KHAN","grade":"4","section":""},{"id":"13","name":"Mohammed MizbaUddin","grade":"4","section":""},{"id":"14","name":"Mohammed Sohaan","grade":"4","section":""},{"id":"15","name":"Muhammad Ibrahim","grade":"4","section":""},{"id":"16","name":"Nida Fatima","grade":"4","section":""},{"id":"17","name":"Shaik Azaan","grade":"4","section":""},{"id":"18","name":"Syed Azaan Uddin","grade":"4","section":""},{"id":"19","name":"SYED FARHAN","grade":"4","section":""},{"id":"20","name":"Syed Mohammed Hussain","grade":"4","section":""},{"id":"21","name":"Syed Murtaza","grade":"4","section":""},{"id":"22","name":"Syed Mustafa","grade":"4","section":""},{"id":"23","name":"Syeda Hoorain","grade":"4","section":""},{"id":"24","name":"Syeda Zainab Afsheen","grade":"4","section":""},{"id":"25","name":"Tazkiya Tahreem","grade":"4","section":""},{"id":"26","name":"Zahra Fatima","grade":"4","section":""},{"id":"27","name":"ARHUM KHAN","grade":"5","section":""},{"id":"28","name":"BATUL FATIMA","grade":"5","section":""},{"id":"29","name":"DURAR HADI","grade":"5","section":""},{"id":"30","name":"KHADIJA FATIMA","grade":"5","section":""},{"id":"31","name":"MARIYAM FATIMA","grade":"5","section":""},{"id":"32","name":"MOHD AMMAR","grade":"5","section":""},{"id":"33","name":"ARZAN","grade":"5","section":""},{"id":"34","name":"MOHD FAIZ","grade":"5","section":""},{"id":"35","name":"MOHD MUHAMMED","grade":"5","section":""},{"id":"36","name":"ZAIN MAHMOOD","grade":"5","section":""},{"id":"37","name":"SYED AFFAN MEER","grade":"5","section":""},{"id":"38","name":"SYED AYAN AHMED","grade":"5","section":""},{"id":"39","name":"SYED MUHAMMMED","grade":"5","section":""},{"id":"40","name":"S. SAMAIRA NOOR","grade":"5","section":""},{"id":"41","name":"UMAIMA SHAIK","grade":"5","section":""},{"id":"42","name":"ZUNAIRA HYDER","grade":"5","section":""},{"id":"43","name":"ABDUL KABEER","grade":"6","section":""},{"id":"44","name":"ABDUL RAHMAN","grade":"6","section":""},{"id":"45","name":"AFEEFA FATIMA","grade":"6","section":""},{"id":"46","name":"AIZA SADIQ","grade":"6","section":""},{"id":"47","name":"ALEENA AZIN","grade":"6","section":""},{"id":"48","name":"ALIZA FATIMA","grade":"6","section":""},{"id":"49","name":"DANIYA LARAIB","grade":"6","section":""},{"id":"50","name":"JUVERIYA KAMAL","grade":"6","section":""},{"id":"51","name":"MADIHA BAKOOBAN","grade":"6","section":""},{"id":"52","name":"MOHD ABDUL RAYYAN","grade":"6","section":""},{"id":"53","name":"MOHAMMED SHUJA","grade":"6","section":""},{"id":"54","name":"SHAIK IBRAHIM","grade":"6","section":""},{"id":"55","name":"SYED AHMED ALI","grade":"6","section":""},{"id":"56","name":"SYED UZAIR","grade":"6","section":""},{"id":"57","name":"SYED ZUHAIR","grade":"6","section":""},{"id":"58","name":"TAMEEM RAHEEL BHAT","grade":"6","section":""},{"id":"59","name":"UMRA FATIMA","grade":"6","section":""},{"id":"60","name":"UZAIR KHAN","grade":"6","section":""},{"id":"61","name":"ZARA SALEEM","grade":"6","section":""},{"id":"62","name":"Abdullah Syed Hasan","grade":"7","section":""},{"id":"63","name":"Ahmed Bin Sawood Bakooban","grade":"7","section":""},{"id":"64","name":"Amatul Hameed Rumaisa","grade":"7","section":""},{"id":"65","name":"Ammara Faiz","grade":"7","section":""},{"id":"66","name":"Md Abdul Bari","grade":"7","section":""},{"id":"67","name":"Mohammed Abdul Salah","grade":"7","section":""},{"id":"68","name":"Mohammed Arhaan Uddin","grade":"7","section":""},{"id":"69","name":"Mohammed Rehan","grade":"7","section":""},{"id":"70","name":"Mohammed Shahriyar Khan","grade":"7","section":""},{"id":"71","name":"Mohd Arham Uddin","grade":"7","section":""},{"id":"72","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"7","section":""},{"id":"73","name":"Syed Khaja Ahsanuddin","grade":"7","section":""},{"id":"74","name":"Syed Rehan","grade":"7","section":""},{"id":"75","name":"Syed Yaheya Zain","grade":"7","section":""},{"id":"76","name":"Syeda Mahveen Fatima","grade":"7","section":""},{"id":"77","name":"Syeda Zunairah Begum","grade":"7","section":""},{"id":"78","name":"Uzair Imtiaz","grade":"7","section":""},{"id":"79","name":"Zunairah Amtul Aleem","grade":"7","section":""},{"id":"80","name":"Abdullah Syed Hasan","grade":"8","section":""},{"id":"81","name":"Ahmed Bin Sawood Bakooban","grade":"8","section":""},{"id":"82","name":"Amatul Hameed Rumaisa","grade":"8","section":""},{"id":"83","name":"Ammara Faiz","grade":"8","section":""},{"id":"84","name":"Md Abdul Bari","grade":"8","section":""},{"id":"85","name":"Mohammed Abdul Salah","grade":"8","section":""},{"id":"86","name":"Mohammed Arhaan Uddin","grade":"8","section":""},{"id":"87","name":"Mohammed Rehan","grade":"8","section":""},{"id":"88","name":"Mohammed Shahriyar Khan","grade":"8","section":""},{"id":"89","name":"Mohd Arham Uddin","grade":"8","section":""},{"id":"90","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"8","section":""},{"id":"91","name":"Syed Khaja Ahsanuddin","grade":"8","section":""},{"id":"92","name":"Syed Rehan","grade": "8", "section": ""}, {"id": "93", "name": "Syed Yaheya Zain", "grade": "8", "section": ""}, {"id": "94", "name": "Syeda Mahveen Fatima", "grade": "8", "section": ""}, {"id": "95", "name": "Syeda Zunairah Begum", "grade": "8", "section": ""}, {"id": "96", "name": "Uzair Imtiaz", "grade": "8", "section": ""}, {"id": "97", "name": "Zunairah Amtul Aleem", "grade": "8", "section": ""}];
+// JSON SYSTEM LAYOUT: Updated staff description identifiers cleanly into default arrays
+const DEFAULT_ROSTER = [{"id":"FAC1","name":"Mr. Mujtaba Khan","grade":"Faculty & Staff","section":"Managing Director"},{"id":"FAC2","name":"Ms. Veena","grade":"Faculty & Staff","section":"Academic Director"},{"id":"FAC3","name":"Ms. Syeda Mahjabeen","grade":"Faculty & Staff","section":"Academic Coordinator"},{"id":"FAC4","name":"Ma. Asma Najeeb","grade":"Faculty & Staff","section":"Academic Incharge(FLK)"},{"id":"FAC5","name":"Mr. Wahed","grade":"Faculty & Staff","section":"Deeniyath HOD"},{"id":"FAC6","name":"Ms. Doris Shaik","grade":"Faculty & Staff","section":"Admin Incharge"},{"id":"FAC7","name":"Ms. Mahjabeen","grade":"Faculty & Staff","section":"Floor In Charge"},{"id":"FAC8","name":"Ms. Seema Jabbar","grade":"Faculty & Staff","section":"In Charge"},{"id":"FAC26","name":"Mr. Salman","grade":"Faculty & Staff","section":"Admin"},{"id":"FAC9","name":"Ms. Shazia","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC10","name":"Ms. Parveen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC11","name":"Ms. Rubeena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC12","name":"Ms. Yasmeen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC13","name":"Ms. Heena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC14","name":"Ms. Mariyam","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC15","name":"Ms. Asfiya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC16","name":"Ms. Kahera","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC17","name":"Ms. Zoya","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC18","name":"Ms. Reshma","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC19","name":"Ms. Masarath","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC20","name":"Ms. Amena","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC21","name":"Ms. Maheen","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC22","name":"Mr. Jaleel","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC23","name":"Mr. Fuzail","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC24","name":"Mr. Loqman","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC25","name":"Mr. Mohiuddin","grade":"Faculty & Staff","section":"Teacher"},{"id":"FAC32","name":"Imran","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC33","name":"Hameed","grade":"Faculty & Staff","section":"Driver"},{"id":"FAC27","name":"Khaled","grade":"Faculty & Staff","section":"Watch man"},{"id":"FAC28","name":"M. Jyoti","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC29","name":"Savitri","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC30","name":"Noor","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"FAC31","name":"Baleshwari","grade":"Faculty & Staff","section":"Supporting Staff"},{"id":"1","name":"Abdul Kabir","grade":"4","section":""},{"id":"2","name":"Ali Bin Sawood Bakoban","grade":"4","section":""},{"id":"3","name":"Ayesha Syed Hasan","grade":"4","section":""},{"id":"4","name":"Ayra Afsheen","grade":"4","section":""},{"id":"5","name":"BIBI AYESHA SIDDIQUA","grade":"4","section":""},{"id":"6","name":"Habeeb Khan","grade":"4","section":""},{"id":"7","name":"MAHER UNNISA","grade":"4","section":""},{"id":"8","name":"Maira Mujeeb Khan","grade":"4","section":""},{"id":"9","name":"Maryam Ismail Shareef","grade":"4","section":""},{"id":"10","name":"Mir Anas Ali","grade":"4","section":""},{"id":"11","name":"Mohammed Ibrahim","grade":"4","section":""},{"id":"12","name":"MOHAMMED MALIK KHAN","grade":"4","section":""},{"id":"13","name":"Mohammed MizbaUddin","grade":"4","section":""},{"id":"14","name":"Mohammed Sohaan","grade":"4","section":""},{"id":"15","name":"Muhammad Ibrahim","grade":"4","section":""},{"id":"16","name":"Nida Fatima","grade":"4","section":""},{"id":"17","name":"Shaik Azaan","grade":"4","section":""},{"id":"18","name":"Syed Azaan Uddin","grade":"4","section":""},{"id":"19","name":"SYED FARHAN","grade":"4","section":""},{"id":"20","name":"Syed Mohammed Hussain","grade":"4","section":""},{"id":"21","name":"Syed Murtaza","grade":"4","section":""},{"id":"22","name":"Syed Mustafa","grade":"4","section":""},{"id":"23","name":"Syeda Hoorain","grade":"4","section":""},{"id":"24","name":"Syeda Zainab Afsheen","grade":"4","section":""},{"id":"25","name":"Tazkiya Tahreem","grade":"4","section":""},{"id":"26","name":"Zahra Fatima","grade":"4","section":""},{"id":"27","name":"ARHUM KHAN","grade":"5","section":""},{"id":"28","name":"BATUL FATIMA","grade":"5","section":""},{"id":"29","name":"DURAR HADI","grade":"5","section":""},{"id":"30","name":"KHADIJA FATIMA","grade":"5","section":""},{"id":"31","name":"MARIYAM FATIMA","grade":"5","section":""},{"id":"32","name":"MOHD AMMAR","grade":"5","section":""},{"id":"33","name":"ARZAN","grade":"5","section":""},{"id":"34","name":"MOHD FAIZ","grade":"5","section":""},{"id":"35","name":"MOHD MUHAMMED","grade":"5","section":""},{"id":"36","name":"ZAIN MAHMOOD","grade":"5","section":""},{"id":"37","name":"SYED AFFAN MEER","grade":"5","section":""},{"id":"38","name":"SYED AYAN AHMED","grade":"5","section":""},{"id":"39","name":"SYED MUHAMMMED","grade":"5","section":""},{"id":"40","name":"S. SAMAIRA NOOR","grade":"5","section":""},{"id":"41","name":"UMAIMA SHAIK","grade":"5","section":""},{"id":"42","name":"ZUNAIRA HYDER","grade":"5","section":""},{"id":"43","name":"ABDUL KABEER","grade":"6","section":""},{"id":"44","name":"ABDUL RAHMAN","grade":"6","section":""},{"id":"45","name":"AFEEFA FATIMA","grade":"6","section":""},{"id":"46","name":"AIZA SADIQ","grade":"6","section":""},{"id":"47","name":"ALEENA AZIN","grade":"6","section":""},{"id":"48","name":"ALIZA FATIMA","grade":"6","section":""},{"id":"49","name":"DANIYA LARAIB","grade":"6","section":""},{"id":"50","name":"JUVERIYA KAMAL","grade":"6","section":""},{"id":"51","name":"MADIHA BAKOOBAN","grade":"6","section":""},{"id":"52","name":"MOHD ABDUL RAYYAN","grade":"6","section":""},{"id":"53","name":"MOHAMMED SHUJA","grade":"6","section":""},{"id":"54","name":"SHAIK IBRAHIM","grade":"6","section":""},{"id":"55","name":"SYED AHMED ALI","grade":"6","section":""},{"id":"56","name":"SYED UZAIR","grade":"6","section":""},{"id":"57","name":"SYED ZUHAIR","grade":"6","section":""},{"id":"58","name":"TAMEEM RAHEEL BHAT","grade":"6","section":""},{"id":"59","name":"UMRA FATIMA","grade":"6","section":""},{"id":"60","name":"UZAIR KHAN","grade":"6","section":""},{"id":"61","name":"ZARA SALEEM","grade":"6","section":""},{"id":"62","name":"Abdullah Syed Hasan","grade":"7","section":""},{"id":"63","name":"Ahmed Bin Sawood Bakooban","grade":"7","section":""},{"id":"64","name":"Amatul Hameed Rumaisa","grade":"7","section":""},{"id":"65","name":"Ammara Faiz","grade":"7","section":""},{"id":"66","name":"Md Abdul Bari","grade":"7","section":""},{"id":"67","name":"Mohammed Abdul Salah","grade":"7","section":""},{"id":"68","name":"Mohammed Arhaan Uddin","grade":"7","section":""},{"id":"69","name":"Mohammed Rehan","grade":"7","section":""},{"id":"70","name":"Mohammed Shahriyar Khan","grade":"7","section":""},{"id":"71","name":"Mohd Arham Uddin","grade":"7","section":""},{"id":"72","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"7","section":""},{"id":"73","name":"Syed Khaja Ahsanuddin","grade":"7","section":""},{"id":"74","name":"Syed Rehan","grade":"7","section":""},{"id":"75","name":"Syed Yaheya Zain","grade":"7","section":""},{"id":"76","name":"Syeda Mahveen Fatima","grade":"7","section":""},{"id":"77","name":"Syeda Zunairah Begum","grade":"7","section":""},{"id":"78","name":"Uzair Imtiaz","grade":"7","section":""},{"id":"79","name":"Zunairah Amtul Aleem","grade":"7","section":""},{"id":"80","name":"Abdullah Syed Hasan","grade":"8","section":""},{"id":"81","name":"Ahmed Bin Sawood Bakooban","grade":"8","section":""},{"id":"82","name":"Amatul Hameed Rumaisa","grade":"8","section":""},{"id":"83","name":"Ammara Faiz","grade":"8","section":""},{"id":"84","name":"Md Abdul Bari","grade":"8","section":""},{"id":"85","name":"Mohammed Abdul Salah","grade":"8","section":""},{"id":"86","name":"Mohammed Arhaan Uddin","grade":"8","section":""},{"id":"87","name":"Mohammed Rehan","grade":"8","section":""},{"id":"88","name":"Mohammed Shahriyar Khan","grade":"8","section":""},{"id":"89","name":"Mohd Arham Uddin","grade":"8","section":""},{"id":"90","name":"Shaik Abdul Fazl ur Rahman Quadri","grade":"8","section":""},{"id":"91","name":"Syed Khaja Ahsanuddin","grade":"8","section":""},{"id":"92","name":"Syed Rehan","grade":"8","section":""},{"id":"93","name":"Syed Yaheya Zain","grade":"8","section":""},{"id":"94","name":"Syeda Mahveen Fatima","grade":"8","section":""},{"id":"95","name":"Syeda Zunairah Begum","grade":"8","section":""},{"id":"96","name":"Uzair Imtiaz","grade":"8","section":""},{"id":"97","name":"Zunairah Amtul Aleem","grade":"8","section":""}];
 
-let state = {
-  view: "vote",
-  config: null,
-  votes: {},
-  voters: {}, 
-  roster: [],
-  houseRoster: [], 
-  houseVoters: {}, 
-  selectedGrade: "",
-  selectedStudentId: "",
-  selectedHouseGrade: "",
-  selectedHouseStudentId: "",
-  selections: {},
-  houseSelections: {},
-  error: "",
-  adminError: "",
-  isAdmin: false,
-  lastReceipt: null
-};
-
-// SYNCHRONOUS RUN ENGINE: Loads directly from variables without crashing the page background loop
 function loadAllSync() {
   try {
     const rawConfig = localStorage.getItem("election-config");
@@ -269,10 +255,37 @@ function saveHouseVoters(){ try{ localStorage.setItem("election-house-voters", J
 
 function esc(s){ const d = document.createElement("div"); d.textContent = s == null ? "" : s; return d.innerHTML; }
 function normId(id){ return (id || "").trim().toLowerCase(); }
+function initials(name){
+  return (name||"").trim().split(/\s+/).slice(0,2).map(w=>w[0]||"").join("").toUpperCase();
+}
 
-function logoHtml(photo){
-  if (photo){ return '<img class="logo-badge" src="' + photo + '" alt="">'; }
-  return '<div class="logo-badge-fallback">LOGO</div>';
+function resizeImageFile(file, maxDim){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w >= h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else if (h > w && h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function avatarHtml(name, photo, sizeClass){
+  if (photo){
+    return '<img class="' + (sizeClass==='mini' ? 'mini-avatar-img' : 'avatar-img') + '" src="' + photo + '" alt="">';
+  }
+  return '<div class="' + (sizeClass==='mini' ? 'mini-avatar-fallback' : 'avatar-fallback') + '">' + esc(initials(name)) + '</div>';
 }
 
 function render(){
@@ -365,7 +378,7 @@ function renderVote(cfg){
       const selected = state.selections[pos.id] === c.id;
       html += '<div class="candidate-row ' + (selected ? "selected":"") + '" data-pos="' + pos.id + '" data-cand="' + c.id + '">';
       html += '<div class="bubble"></div>';
-      html += '<div class="cand-media">' + logoHtml(c.logo) + '</div>';
+      html += '<div class="cand-media">' + avatarHtml(c.name, c.photo, 'full') + (c.logo ? '<img class="logo-badge" src="' + c.logo + '" alt="">' : '') + '</div>';
       html += '<div><div class="cand-name">' + esc(c.name) + '</div></div></div>';
     });
     html += '</div></div>';
@@ -428,7 +441,7 @@ function renderHouseVote(cfg){
       const selected = state.houseSelections[pos.id] === c.id;
       html += '<div class="candidate-row ' + (selected ? "selected":"") + '" data-house-pos="' + pos.id + '" data-house-cand="' + c.id + '">';
       html += '<div class="bubble"></div>';
-      html += '<div class="cand-media">' + logoHtml(c.logo) + '</div>';
+      html += '<div class="cand-media">' + avatarHtml(c.name, c.photo, 'full') + (c.logo ? '<img class="logo-badge" src="' + c.logo + '" alt="">' : '') + '</div>';
       html += '<div><div class="cand-name">' + esc(c.name) + '</div></div></div>';
     });
     html += '</div></div>';
@@ -509,7 +522,8 @@ function renderAdmin(cfg){
     html += '<input type="text" placeholder="Slogan (optional)" id="newCandSlogan-' + pos.id + '">';
     html += '</div><div style="height:8px;"></div>';
     html += '<div class="row-flex">';
-    html += '<div style="flex:1; min-width:160px;"><label class="field-hint">Campaign logo: upload</label><input type="file" accept="image/*" id="newCandLogoFile-' + pos.id + '"><label class="field-hint">...or paste a logo URL</label><input type="text" placeholder="https://..." id="newCandLogoUrl-' + pos.id + '"></div>';
+    html += '<div style="flex:1; min-width:160px;"><label class="field-hint">Profile Photo: upload</label><input type="file" accept="image/*" id="newCandPhotoFile-' + pos.id + '"></div>';
+    html += '<div style="flex:1; min-width:160px;"><label class="field-hint">Campaign logo: upload</label><input type="file" accept="image/*" id="newCandLogoFile-' + pos.id + '"></div>';
     html += '</div><div style="height:10px;"></div>';
     html += '<button class="small-btn" data-add-cand="' + pos.id + '">Add Candidate</button>';
     html += '</div></div>';
@@ -625,6 +639,22 @@ function attachHandlers(){
     });
   }
 
+  document.querySelectorAll('input[id^="newCandLogoFile-"]').forEach(inp => {
+    inp.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      inp.dataset.dataurl = await resizeImageFile(file, 160);
+    });
+  });
+
+  document.querySelectorAll('input[id^="newCandPhotoFile-"]').forEach(inp => {
+    inp.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      inp.dataset.photoDataurl = await resizeImageFile(file, 160);
+    });
+  });
+
   document.querySelectorAll('[data-add-cand]').forEach(btn => {
     btn.addEventListener('click', () => {
       const posId = btn.getAttribute('data-add-cand');
@@ -632,8 +662,12 @@ function attachHandlers(){
       const name = nameEl.value.trim();
       if (!name) return;
       const sloganEl = document.getElementById('newCandSlogan-' + posId);
+      const logoFile = document.getElementById('newCandLogoFile-' + posId);
+      const photoFile = document.getElementById('newCandPhotoFile-' + posId);
+      const logo = (logoFile && logoFile.dataset.dataurl) || null;
+      const photo = (photoFile && photoFile.dataset.photoDataurl) || null;
       const pos = state.config.positions.find(p => p.id === posId);
-      pos.candidates.push({ id: Math.random().toString(36).substring(7), name: name, slogan: sloganEl.value.trim(), logo: null });
+      pos.candidates.push({ id: Math.random().toString(36).substring(7), name: name, slogan: sloganEl.value.trim(), logo: logo, photo: photo });
       saveConfig();
       render();
     });
@@ -715,7 +749,7 @@ function importRosterText(text, isHouse) {
   return count;
 }
 
-function handleVoteSubmit(){
+async function handleVoteSubmit(){
   if (!state.selectedGrade || !state.selectedStudentId){ state.error = "Voter profiling coordinates missing."; render(); return; }
   const student = state.roster.find(s => s.id === state.selectedStudentId);
   const canonicalId = normId(student.id);
@@ -739,7 +773,7 @@ function handleVoteSubmit(){
   render();
 }
 
-function handleHouseVoteSubmit(){
+async function handleHouseVoteSubmit(){
   if (!state.selectedHouseGrade || !state.selectedHouseStudentId){ state.error = "Special registration credentials missing."; render(); return; }
   const member = state.houseRoster.find(s => s.id === state.selectedHouseStudentId);
   const canonicalId = normId(member.id);
@@ -763,7 +797,6 @@ function handleHouseVoteSubmit(){
   render();
 }
 
-// BOOT TIMING MATRIX: Synchronously fire render loops
 loadAllSync();
 render();
 </script>
