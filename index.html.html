@@ -112,6 +112,14 @@
 </div>
 
 <script>
+// CRITICAL: Initialize environmental storage wrappers at the absolute top of the runtime execution path
+if (!window.storage) {
+  window.storage = {
+    get: async function(key) { return { value: localStorage.getItem(key) }; },
+    set: async function(key, val) { localStorage.setItem(key, val); return true; }
+  };
+}
+
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
 
@@ -141,7 +149,7 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// Roster data with dynamic type strings intact
+// Complete roster data from your files
 const DEFAULT_ROSTER = [
   {"id": "FAC1", "name": "Mr. Mujtaba Khan", "grade": "Faculty & Staff", "section": "Managing Director"},
   {"id": "FAC2", "name": "Ms. Veena", "grade": "Faculty & Staff", "section": "Academic Director"},
@@ -183,7 +191,7 @@ let state = {
   view: "vote",
   config: null,
   votes: {},
-  voters: {}, // Wires voter tracing counts to handle discrete multiple logs per account ID
+  voters: {}, 
   roster: [],
   selectedGrade: "",
   selectedStudentId: "",
@@ -214,7 +222,6 @@ async function loadAll(){
   state.votes = rawVotes ? JSON.parse(rawVotes) : {};
   state.roster = rawRoster ? JSON.parse(rawRoster) : JSON.parse(JSON.stringify(DEFAULT_ROSTER));
 
-  // Auto-migration array checking code for backward-compatibility tracking values
   if (rawVoters) {
     try {
       const parsedVoters = JSON.parse(rawVoters);
@@ -339,7 +346,6 @@ function renderVote(cfg){
     let votesCast = state.voters[canonicalId] || 0;
     let maxAllowed = s.grade === "Faculty & Staff" ? 2 : 1;
     
-    // Check if the individual has completely consumed their selection options
     if (votesCast >= maxAllowed) {
       html += '<option value="' + esc(s.id) + '" disabled style="color:#bbb;">' + esc(s.name) + detailSuffix + ' (Already Voted)</option>';
     } else if (votesCast > 0) {
@@ -379,7 +385,7 @@ function renderVoted(cfg){
   let gradeDisplay = r.grade === "Faculty & Staff" ? "Faculty & Staff" : "Grade " + r.grade;
   let nextStepsHtml = r.votesRemaining > 0 
     ? '<div class="receipt" style="margin-top:18px; font-weight:bold; color:var(--heading);">You have ' + r.votesRemaining + ' ballot remaining. You can select your name again to cast your second vote.</div>'
-    : '<div class="receipt" style="margin-top:18px;">Results will be compiled and announced once polling options close.</div>';
+    : '<div class="receipt" style="margin-top:18px;">Results will be announced by your school once voting closes.</div>';
 
   return '<div class="card"><div class="card-inner" style="text-align:center;">' +
     '<div class="stamp">Ballot Received</div>' +
@@ -852,7 +858,6 @@ async function handleVoteSubmit(){
   const canonicalId = normId(student.id);
   const rawVoters = await safeGet("election-voters");
   
-  // Safe load tracking counts mapping 
   try {
     const parsedVoters = rawVoters ? JSON.parse(rawVoters) : {};
     if (Array.isArray(parsedVoters)) {
@@ -865,7 +870,6 @@ async function handleVoteSubmit(){
     state.voters = {};
   }
 
-  // Set individual logic boundaries
   let votesCast = state.voters[canonicalId] || 0;
   let maxAllowed = student.grade === "Faculty & Staff" ? 2 : 1;
 
@@ -886,7 +890,6 @@ async function handleVoteSubmit(){
   state.votes = rawVotes ? JSON.parse(rawVotes) : state.votes;
   Object.values(state.selections).forEach(candId => { state.votes[candId] = (state.votes[candId] || 0) + 1; });
   
-  // Increment target voter's active logging status
   state.voters[canonicalId] = votesCast + 1;
 
   await saveVotes();
@@ -907,6 +910,11 @@ async function handleVoteSubmit(){
   state.view = "voted";
   render();
 }
+
+(async function init(){
+  await loadAll();
+  render();
+})();
 </script>
 </body>
 </html>
