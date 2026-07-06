@@ -119,6 +119,7 @@ window.storage = window.storage || {
 
 const SHARED = true;
 const DEFAULT_PASSCODE = "admin2026";
+const ELECTION_VERSION = "v2.0_final"; // Incrementing this version string force-flushes the device cache instantly
 
 const DEFAULT_CONFIG = {
   schoolName: "VIP's INTERNATIONAL SCHOOL",
@@ -202,7 +203,7 @@ const DEFAULT_CONFIG = {
   ]
 };
 
-// Roster sorted strictly: MD -> Academic Directors/Incharges -> HODs -> Admin -> Teachers -> Drivers -> Supporting Staff
+// Fixed-sequence verified master roster layout
 const DEFAULT_ROSTER = [
   {"id": "FAC1", "name": "Mr. Mujtaba Khan", "grade": "Faculty & Staff", "section": "Managing Director"},
   {"id": "FAC2", "name": "Ms. Veena", "grade": "Faculty & Staff", "section": "Academic Director"},
@@ -261,16 +262,6 @@ let state = {
   pendingImages: {}
 };
 
-async function safeGet(key){
-  try{ const r = await window.storage.get(key, SHARED); return r ? r.value : null; }
-  catch(e){ return null; }
-}
-async function safeSet(key, value){
-  try{ await window.storage.set(key, value, SHARED); return true; }
-  catch(e){ console.error("storage set failed", e); return false; }
-}
-
-// Function to strictly preserve designation hierarchy when sorting dropdown items manually
 function getStaffOrderScore(section) {
   const s = (section || "").toLowerCase();
   if (s.includes("managing director")) return 1;
@@ -280,10 +271,19 @@ function getStaffOrderScore(section) {
   if (s.includes("admin")) return 5;
   if (s.includes("teacher")) return 6;
   if (s.includes("driver")) return 7;
-  return 8; // Watchman and supporting staff
+  return 8; 
 }
 
 async function loadAll(){
+  // HARD FORCE-RESET TO EVADE OLD CACHE PARSING PROBLEMS
+  const cachedVersion = await safeGet("election-app-version");
+  if (cachedVersion !== ELECTION_VERSION) {
+    await safeSet("election-config", JSON.stringify(DEFAULT_CONFIG));
+    await safeSet("election-roster", JSON.stringify(DEFAULT_ROSTER));
+    await safeSet("election-house-roster", JSON.stringify(DEFAULT_ROSTER));
+    await safeSet("election-app-version", ELECTION_VERSION);
+  }
+
   const rawConfig = await safeGet("election-config");
   const rawVotes = await safeGet("election-votes");
   const rawVoters = await safeGet("election-voters");
@@ -294,12 +294,7 @@ async function loadAll(){
   state.config = rawConfig ? JSON.parse(rawConfig) : JSON.parse(JSON.stringify(DEFAULT_CONFIG));
   state.votes = rawVotes ? JSON.parse(rawVotes) : {};
   state.roster = rawRoster ? JSON.parse(rawRoster) : JSON.parse(JSON.stringify(DEFAULT_ROSTER));
-  
-  if (rawHouseRoster) {
-    state.houseRoster = JSON.parse(rawHouseRoster);
-  } else {
-    state.houseRoster = JSON.parse(JSON.stringify(state.roster));
-  }
+  state.houseRoster = rawHouseRoster ? JSON.parse(rawHouseRoster) : JSON.parse(JSON.stringify(state.roster));
 
   if (rawVoters) {
     try {
@@ -311,10 +306,6 @@ async function loadAll(){
   if (rawHouseVoters) {
     try { state.houseVoters = JSON.parse(rawHouseVoters); } catch(e) { state.houseVoters = {}; }
   } else { state.houseVoters = {}; }
-
-  if (!rawConfig) await safeSet("election-config", JSON.stringify(state.config));
-  if (!rawRoster) await safeSet("election-roster", JSON.stringify(state.roster));
-  if (!rawHouseRoster) await safeSet("election-house-roster", JSON.stringify(state.houseRoster));
 }
 
 async function saveConfig(){ await safeSet("election-config", JSON.stringify(state.config)); }
@@ -413,7 +404,6 @@ function renderVote(cfg){
 
   html += '<div style="height:14px;"></div><label class="field-label">Select Your Name</label>';
   
-  // Sort logic patch: if Faculty & Staff, follow explicit custom hierarchy tier matrix layout
   const studentsInGrade = state.selectedGrade ? state.roster.filter(s => String(s.grade) === state.selectedGrade).sort((a, b) => {
     if (state.selectedGrade === "Faculty & Staff") {
       return (getStaffOrderScore(a.section) - getStaffOrderScore(b.section)) || a.name.localeCompare(b.name);
@@ -479,7 +469,6 @@ function renderHouseVote(cfg){
 
   html += '<div style="height:14px;"></div><label class="field-label">Select Your Name</label>';
   
-  // Sort logic patch for Special Votes dropdown panel to match sequential hierarchy instructions
   const members = state.selectedHouseGrade ? state.houseRoster.filter(s => String(s.grade) === state.selectedHouseGrade).sort((a, b) => {
     if (state.selectedHouseGrade === "Faculty & Staff") {
       return (getStaffOrderScore(a.section) - getStaffOrderScore(b.section)) || a.name.localeCompare(b.name);
